@@ -1,6 +1,32 @@
-pluginManagement { includeBuild("../node_modules/@react-native/gradle-plugin") }
-plugins { id("com.facebook.react.settings") }
-extensions.configure(com.facebook.react.ReactSettingsExtension){ ex -> ex.autolinkLibrariesFromCommand() }
+import groovy.json.JsonSlurper
+
+pluginManagement {
+    def npmCommand = System.getProperty('os.name').toLowerCase().contains('windows') ? 'npm.cmd' : 'npm'
+    def projectRoot = settingsDir.parentFile
+    def appPackageFile = new File(projectRoot, 'package.json')
+    def rnPackageFile = new File(projectRoot, 'node_modules/react-native/package.json')
+
+    if (appPackageFile.exists()) {
+        def expectedRn = new JsonSlurper().parse(appPackageFile).dependencies['react-native']
+        def currentRn = rnPackageFile.exists() ? new JsonSlurper().parse(rnPackageFile).version : null
+        if (currentRn != expectedRn) {
+            println "Aplus Gradle: react-native trong node_modules = ${currentRn}, package.json cần = ${expectedRn}. Đang chạy npm install trước khi Sync..."
+            def result = new ProcessBuilder(npmCommand, 'install')
+                    .directory(projectRoot)
+                    .inheritIO()
+                    .start()
+                    .waitFor()
+            if (result != 0) {
+                throw new GradleException('Aplus Gradle: npm install thất bại, chưa thể Sync Android project.')
+            }
+        }
+    }
+
+    includeBuild('../node_modules/@react-native/gradle-plugin')
+}
+
+plugins { id('com.facebook.react.settings') }
+extensions.configure(com.facebook.react.ReactSettingsExtension) { ex -> ex.autolinkLibrariesFromCommand() }
 rootProject.name = 'Aplus'
 include ':app'
 includeBuild('../node_modules/@react-native/gradle-plugin')
