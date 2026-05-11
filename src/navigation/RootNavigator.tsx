@@ -15,6 +15,10 @@ import {CommandLifecycleScreen} from '@/features/lock/screens/CommandLifecycleSc
 import {LockDetailScreen} from '@/features/lock/screens/LockDetailScreen';
 import {RemoteUnlockScreen} from '@/features/lock/screens/RemoteUnlockScreen';
 import {PairingEntryScreen} from '@/features/pairing/screens/PairingEntryScreen';
+import {PasswordDetailScreen} from '@/features/password/screens/PasswordDetailScreen';
+import {PasswordManagerScreen} from '@/features/password/screens/PasswordManagerScreen';
+import {AddPasswordScreen} from '@/features/password/screens/AddPasswordScreen';
+import {PasswordScheduleScreen} from '@/features/password/screens/PasswordScheduleScreen';
 import {PlaceholderScreen} from '@/features/placeholder/PlaceholderScreen';
 import {SplashScreen} from '@/features/splash/screens/SplashScreen';
 import {useAppState} from '@/state/AppStateContext';
@@ -80,6 +84,14 @@ export function RootNavigator() {
         return <RecipientPickerScreen lockId={route.params.lockId} credentialType={route.params.credentialType} />;
       case 'CompatibilityCheck':
         return <CompatibilityCheckScreen lockId={route.params?.lockId} credentialType={route.params?.credentialType} />;
+      case 'PasswordManager':
+        return <PasswordManagerScreen lockId={route.params?.lockId} />;
+      case 'AddPassword':
+        return <AddPasswordScreen lockId={route.params?.lockId} recipientId={route.params?.recipientId} />;
+      case 'PasswordDetail':
+        return <PasswordDetailScreen passwordId={route.params.passwordId} />;
+      case 'PasswordSchedule':
+        return <PasswordScheduleScreen passwordId={route.params?.passwordId} lockId={route.params?.lockId} draftKind={route.params?.draftKind} />;
       case 'Access':
         return <CredentialHubScreen />;
       case 'Activity':
@@ -88,8 +100,6 @@ export function RootNavigator() {
         return <PlaceholderScreen title="Cài đặt" description="Hồ sơ, bảo mật, thông báo, nhà/phòng và tuỳ chọn hệ thống." primaryAction="Hồ sơ / Đăng xuất" targetRoute="Profile" secondaryAction="Bảo mật" secondaryTargetRoute="Security" />;
       case 'Pairing':
         return <PairingEntryScreen />;
-      case 'AddPassword':
-        return <PlaceholderScreen title="Thêm mật khẩu" description="Batch 05 sẽ hoàn thiện tạo mã thường, mã tạm, mã chu kỳ, revoke/gia hạn và sync state." primaryAction="Về Credential Hub" targetRoute="CredentialHub" />;
       case 'FingerprintEnroll':
         return <PlaceholderScreen title="Thêm vân tay" description="Batch 06 sẽ mô phỏng enrollment 3 lần quét và lưu templateId/reference, không lưu ảnh vân tay thô." primaryAction="Kiểm tra tương thích" targetRoute="CompatibilityCheck" />;
       case 'FaceEnroll':

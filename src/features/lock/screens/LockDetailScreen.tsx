@@ -117,7 +117,7 @@ export function LockDetailScreen({lockId}: {lockId: string}) {
 
       <View style={styles.gridRow}>
         <QuickActionTile icon="key" title="Thêm quyền" subtitle="UI-16 Credential Hub" onPress={() => navigation.navigate('CredentialHub', {lockId: lock.id})} />
-        <QuickActionTile icon="password" title="Mã PIN" subtitle="Tạo mật khẩu ở Batch 05" onPress={() => navigation.navigate('AddPassword', {lockId: lock.id})} />
+        <QuickActionTile icon="password" title="Mã PIN" subtitle="UI-03/26/45/46" onPress={() => navigation.navigate('PasswordManager', {lockId: lock.id})} />
       </View>
       <View style={styles.gridRow}>
         <QuickActionTile icon="fingerprint" title="Vân tay" subtitle="Capability checked" disabled={!lock.capabilities.supportsFingerprint} badge={!lock.capabilities.supportsFingerprint ? 'Khóa' : undefined} onPress={() => navigation.navigate('FingerprintEnroll', {lockId: lock.id})} />
@@ -143,7 +143,7 @@ export function LockDetailScreen({lockId}: {lockId: string}) {
             <AplusText variant="caption">{lastCommandRecord.actorName} · {new Date(lastCommandRecord.createdAt).toLocaleString('vi-VN')}</AplusText>
           </>
         ) : (
-          <AplusText variant="caption">Chưa có command app nào cho khóa này trong phiên mock.</AplusText>
+          <AplusText variant="caption">Command và mật khẩu mock sẽ ghi vào Records để kiểm thử audit.</AplusText>
         )}
         <AplusButton title="Xem lịch sử" leftIcon="history" variant="secondary" onPress={() => navigation.navigate('Activity')} />
       </AplusCard>

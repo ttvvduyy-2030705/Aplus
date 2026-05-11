@@ -1,5 +1,6 @@
 import type {OtpFlow} from '@/types/auth';
 import type {CredentialType} from '@/types/credential';
+import type {PasswordKind} from '@/types/password';
 
 export type AuthRouteName = 'Login' | 'Register' | 'ForgotPassword' | 'OtpVerify' | 'ResetPassword';
 export type MainTabRouteName = 'Home' | 'Access' | 'Activity' | 'Settings';
@@ -18,7 +19,10 @@ export type AppRouteParams = {
   CredentialHub: {lockId?: string} | undefined;
   RecipientPicker: {lockId?: string; credentialType: CredentialType};
   CompatibilityCheck: {lockId?: string; credentialType?: CredentialType} | undefined;
-  AddPassword: {lockId?: string; recipientId?: string};
+  PasswordManager: {lockId?: string} | undefined;
+  AddPassword: {lockId?: string; recipientId?: string} | undefined;
+  PasswordDetail: {passwordId: string};
+  PasswordSchedule: {passwordId?: string; lockId?: string; draftKind?: PasswordKind} | undefined;
   FingerprintEnroll: {lockId?: string; recipientId?: string};
   FaceEnroll: {lockId?: string; recipientId?: string};
   CardManage: {lockId?: string; recipientId?: string};
