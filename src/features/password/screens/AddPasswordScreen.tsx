@@ -26,6 +26,16 @@ const kindOptions: Array<{kind: PasswordKind; label: string; desc: string}> = [
   {kind: 'guest', label: 'Mã khách', desc: 'Khách thuê/khách lưu trú'},
 ];
 
+const scheduleDays = [
+  {value: 1, label: 'T2'},
+  {value: 2, label: 'T3'},
+  {value: 3, label: 'T4'},
+  {value: 4, label: 'T5'},
+  {value: 5, label: 'T6'},
+  {value: 6, label: 'T7'},
+  {value: 0, label: 'CN'},
+];
+
 function parseDate(value: string, fallback: number) {
   const trimmed = value.trim();
   if (!trimmed) {
@@ -81,6 +91,14 @@ export function AddPasswordScreen({lockId, recipientId}: {lockId?: string; recip
   const selectedLock = useMemo<AplusLock | undefined>(() => fixedLock ?? locks.find(item => item.id === selectedLockId), [fixedLock, locks, selectedLockId]);
   const owner = useMemo(() => people.find(item => item.id === ownerId), [ownerId, people]);
 
+  const toggleScheduleDay = (day: number) => {
+    setScheduleRule(prev => {
+      const hasDay = prev.daysOfWeek.includes(day);
+      const nextDays = hasDay ? prev.daysOfWeek.filter(item => item !== day) : [...prev.daysOfWeek, day].sort();
+      return {...prev, daysOfWeek: nextDays};
+    });
+  };
+
   const createPassword = async () => {
     if (!selectedLock) {
       setError('Chưa chọn khóa để tạo mật khẩu.');
@@ -90,15 +108,23 @@ export function AddPasswordScreen({lockId, recipientId}: {lockId?: string; recip
       setError('Người nhận không hợp lệ hoặc đã hết hiệu lực.');
       return;
     }
-    const validation = MockPasswordRepository.validateCode(code, selectedLock.id);
+    const start = parseDate(validFrom, Date.now());
+    const end = kind === 'permanent' ? undefined : parseDate(validTo, Date.now() + 1000 * 60 * 60 * 24 * 7);
+    const validation = MockPasswordRepository.validateCode(code, selectedLock.id, undefined, start, end);
     if (!validation.ok) {
       setError(validation.message);
       return;
     }
-    const start = parseDate(validFrom, Date.now());
-    const end = kind === 'permanent' ? undefined : parseDate(validTo, Date.now() + 1000 * 60 * 60 * 24 * 7);
     if (end && end <= start) {
       setError('Ngày hết hạn phải sau ngày bắt đầu.');
+      return;
+    }
+    if (kind === 'recurring' && scheduleRule.daysOfWeek.length === 0) {
+      setError('Mã chu kỳ cần ít nhất một ngày lặp.');
+      return;
+    }
+    if (kind === 'recurring' && scheduleRule.startTime >= scheduleRule.endTime) {
+      setError('Giờ bắt đầu lịch chu kỳ phải trước giờ kết thúc.');
       return;
     }
     setCreating(true);
@@ -182,8 +208,16 @@ export function AddPasswordScreen({lockId, recipientId}: {lockId?: string; recip
               <AplusText variant="subtitle">Lịch chu kỳ</AplusText>
               <AplusText variant="caption">{scheduleRule.daysOfWeek.length} ngày/tuần · {scheduleRule.startTime}-{scheduleRule.endTime}</AplusText>
             </View>
-            <AplusButton title="Sửa lịch" leftIcon="calendar" variant="secondary" onPress={() => navigation.navigate('PasswordSchedule', {lockId: selectedLock?.id, draftKind: kind})} />
+            <AplusButton title="Xem UI-46" leftIcon="calendar" variant="secondary" onPress={() => navigation.navigate('PasswordSchedule', {lockId: selectedLock?.id, draftKind: kind})} />
           </View>
+          <View style={styles.chipRow}>
+            {scheduleDays.map(day => <OptionPill key={day.value} label={day.label} active={scheduleRule.daysOfWeek.includes(day.value)} onPress={() => toggleScheduleDay(day.value)} />)}
+          </View>
+          <View style={styles.scheduleTimeRow}>
+            <AplusTextField label="Giờ bắt đầu" value={scheduleRule.startTime} onChangeText={value => setScheduleRule(prev => ({...prev, startTime: value}))} placeholder="08:00" leftIcon="calendar" containerStyle={styles.timeInput} />
+            <AplusTextField label="Giờ kết thúc" value={scheduleRule.endTime} onChangeText={value => setScheduleRule(prev => ({...prev, endTime: value}))} placeholder="18:00" leftIcon="calendar" containerStyle={styles.timeInput} />
+          </View>
+          <AplusTextField label="Ghi chú lịch" value={scheduleRule.note ?? ''} onChangeText={value => setScheduleRule(prev => ({...prev, note: value}))} placeholder="Ví dụ: ca sáng / lịch lớp" leftIcon="password" />
         </AplusCard>
       ) : null}
 
@@ -210,5 +244,7 @@ const styles = StyleSheet.create({
   optionPill: {borderWidth: 1, borderColor: theme.colors.border, borderRadius: theme.radius.pill, paddingHorizontal: theme.spacing.md, paddingVertical: theme.spacing.sm, backgroundColor: theme.colors.surfaceStrong},
   optionActive: {borderColor: theme.colors.borderStrong, backgroundColor: theme.colors.primarySoft},
   rowBetween: {flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: theme.spacing.md},
+  scheduleTimeRow: {flexDirection: 'row', gap: theme.spacing.md},
+  timeInput: {flex: 1},
   errorCard: {borderColor: theme.colors.danger},
 });

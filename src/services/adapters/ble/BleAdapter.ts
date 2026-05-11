@@ -1,7 +1,12 @@
+import type {LockCapabilities} from '@/types/lock';
+
 export type BleDevice = {
   id: string;
   name: string;
   rssi?: number;
+  serial?: string;
+  model?: string;
+  capabilities?: LockCapabilities;
 };
 
 export interface BleAdapter {

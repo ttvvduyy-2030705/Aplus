@@ -4,6 +4,7 @@ import {MockBleAdapter} from './ble/MockBleAdapter';
 import {MockFirmwareOtaAdapter} from './firmware/MockFirmwareOtaAdapter';
 import {MockNfcAdapter} from './nfc/MockNfcAdapter';
 import {MockNotificationAdapter} from './notification/MockNotificationAdapter';
+import {MockPairingAdapter} from './pairing/MockPairingAdapter';
 import {MockQrScanAdapter} from './qr/MockQrScanAdapter';
 import {MockRealtimeAdapter} from './realtime/MockRealtimeAdapter';
 import {PlatformSecureStorageAdapter} from './secureStorage/PlatformSecureStorageAdapter';
@@ -16,6 +17,7 @@ export const NativeAdapters = {
   nfc: MockNfcAdapter,
   biometric: MockBiometricAdapter,
   notification: MockNotificationAdapter,
+  pairing: MockPairingAdapter,
   qrScan: MockQrScanAdapter,
   firmwareOta: MockFirmwareOtaAdapter,
   realtime: MockRealtimeAdapter,

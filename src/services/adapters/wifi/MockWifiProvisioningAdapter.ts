@@ -9,12 +9,12 @@ export const MockWifiProvisioningAdapter: WifiProvisioningAdapter = {
       {ssid: 'SmartHome_Test', level: 58, secure: true},
     ];
   },
-  async provision() {
+  async provision(_deviceId, _ssid, password) {
     await wait(520);
-    return {success: true};
+    return {success: password.length >= 8 && password.toLowerCase() !== 'wrongpass'};
   },
 };
 
 function wait(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise<void>(resolve => setTimeout(resolve, ms));
 }

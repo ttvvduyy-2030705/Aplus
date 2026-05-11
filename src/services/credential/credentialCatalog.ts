@@ -69,6 +69,15 @@ export const credentialTypeOptions: CredentialTypeOption[] = [
     title: 'Quản trị phụ',
     description: 'Cấp role/phạm vi thao tác cho sub admin, staff, tenant.',
     icon: 'admin',
+    targetRoute: 'StaffTenant',
+    requiredPermission: 'canManageCredentials',
+    sensitive: true,
+  },
+  {
+    type: 'combination',
+    title: 'Mở khóa kết hợp',
+    description: 'Rule PIN+card, app+fingerprint hoặc các tổ hợp an toàn khác.',
+    icon: 'credential',
     targetRoute: 'MoreHub',
     requiredPermission: 'canManageCredentials',
     sensitive: true,
@@ -98,4 +107,20 @@ export const permissionMatrix: PermissionMatrixEntry[] = [
 
 export function getRoleLabel(role: PersonRole) {
   return permissionMatrix.find(item => item.role === role)?.label ?? role;
+}
+
+
+export function getPermissionSet(role: PersonRole) {
+  return permissionMatrix.find(item => item.role === role)?.permissions ?? permissionMatrix[0].permissions;
+}
+
+export function canGrantRole(actorRole: PersonRole, targetRole: PersonRole) {
+  if (actorRole === 'Owner') {
+    return targetRole !== 'Owner';
+  }
+  return permissionMatrix.find(item => item.role === actorRole)?.canGrantRoles.includes(targetRole) ?? false;
+}
+
+export function canPerformAction(role: PersonRole, action: keyof PermissionMatrixEntry['permissions']) {
+  return Boolean(permissionMatrix.find(item => item.role === role)?.permissions[action]);
 }

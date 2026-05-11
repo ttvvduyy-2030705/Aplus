@@ -83,7 +83,7 @@ export function HomeScreen() {
         </View>
         <View style={styles.quickRow}>
           <AplusButton title={isOffline ? 'Online mock' : 'Offline mock'} leftIcon={isOffline ? 'wifi' : 'signal'} variant="secondary" onPress={() => setOfflineMock(!isOffline)} style={styles.quickButton} />
-          <AplusButton title="Thêm demo" leftIcon="plus" variant="ghost" onPress={() => addDemoLock(selectedLockFilter)} style={styles.quickButton} />
+          <AplusButton title="More Hub" leftIcon="more" variant="ghost" onPress={() => navigation.navigate('MoreHub', undefined)} style={styles.quickButton} />
         </View>
       </AplusCard>
 
@@ -174,10 +174,12 @@ const styles = StyleSheet.create({
   },
   quickRow: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: theme.spacing.md,
   },
   quickButton: {
-    flex: 1,
+    flexBasis: '45%',
+    flexGrow: 1,
   },
   filterRow: {
     gap: theme.spacing.sm,

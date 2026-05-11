@@ -1,10 +1,10 @@
 import {MockCredentialRepository} from './MockCredentialRepository';
 import {MockLockRepository} from './MockLockRepository';
-import type {Credential} from '@/types/credential';
 import type {AccessRecord} from '@/types/lock';
 import type {CreatePasswordInput, PasswordCredential, PasswordKind, PasswordPolicy, PasswordStatus, PasswordSummary, PasswordValidationResult, ScheduleRule} from '@/types/password';
 
 const DAY = 1000 * 60 * 60 * 24;
+const OPEN_END = Number.MAX_SAFE_INTEGER;
 
 const passwordPolicy: PasswordPolicy = {
   minLength: 6,
@@ -102,7 +102,7 @@ let passwords: PasswordCredential[] = [
 ];
 
 function wait(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise<void>(resolve => setTimeout(resolve, ms));
 }
 
 function clonePassword(item: PasswordCredential): PasswordCredential {
@@ -112,11 +112,11 @@ function clonePassword(item: PasswordCredential): PasswordCredential {
   };
 }
 
-function nowStatus(item: PasswordCredential): PasswordStatus {
+function nowStatus(item: PasswordCredential, at = Date.now()): PasswordStatus {
   if (item.status === 'revoked' || item.status === 'pendingRevoke' || item.status === 'used' || item.status === 'paused' || item.status === 'pendingSync') {
     return item.status;
   }
-  if (item.validTo && item.validTo < Date.now()) {
+  if (item.validTo && item.validTo < at) {
     return 'expired';
   }
   return item.status;
@@ -131,7 +131,64 @@ function normalizeDigits(code: string) {
   return code.replace(/\D/g, '');
 }
 
-function validatePasswordCode(code: string, lockId: string, ignorePasswordId?: string): PasswordValidationResult {
+function windowsOverlap(aStart: number, aEnd: number | undefined, bStart: number, bEnd: number | undefined) {
+  const aEndSafe = aEnd ?? OPEN_END;
+  const bEndSafe = bEnd ?? OPEN_END;
+  return aStart <= bEndSafe && bStart <= aEndSafe;
+}
+
+function parseClockToMinutes(value: string) {
+  const [hourText, minuteText] = value.split(':');
+  const hour = Number(hourText);
+  const minute = Number(minuteText);
+  if (!Number.isFinite(hour) || !Number.isFinite(minute)) {
+    return undefined;
+  }
+  return hour * 60 + minute;
+}
+
+function isScheduleActive(schedule: ScheduleRule | undefined, at = Date.now()) {
+  if (!schedule || !schedule.enabled) {
+    return true;
+  }
+  const date = new Date(at);
+  const day = date.getDay();
+  if (!schedule.daysOfWeek.includes(day)) {
+    return false;
+  }
+  const start = parseClockToMinutes(schedule.startTime);
+  const end = parseClockToMinutes(schedule.endTime);
+  if (start === undefined || end === undefined) {
+    return false;
+  }
+  const current = date.getHours() * 60 + date.getMinutes();
+  if (start === end) {
+    return true;
+  }
+  if (start < end) {
+    return current >= start && current <= end;
+  }
+  return current >= start || current <= end;
+}
+
+function getUseBlockReason(item: PasswordCredential, at = Date.now()) {
+  const status = nowStatus(item, at);
+  if (status !== 'active' && status !== 'pendingSync') {
+    return `trạng thái ${getPasswordStatusLabel(status)}`;
+  }
+  if (item.validFrom > at) {
+    return 'chưa đến thời gian hiệu lực';
+  }
+  if (item.validTo && item.validTo < at) {
+    return 'đã hết hạn';
+  }
+  if (!isScheduleActive(item.scheduleRule, at)) {
+    return 'nằm ngoài lịch chu kỳ';
+  }
+  return undefined;
+}
+
+function validatePasswordCode(code: string, lockId: string, ignorePasswordId?: string, validFrom = Date.now(), validTo?: number): PasswordValidationResult {
   const normalized = normalizeDigits(code);
   if (normalized !== code) {
     return {ok: false, message: 'Mã chỉ được gồm chữ số.'};
@@ -140,12 +197,33 @@ function validatePasswordCode(code: string, lockId: string, ignorePasswordId?: s
     return {ok: false, message: `Mã phải dài ${passwordPolicy.minLength}-${passwordPolicy.maxLength} số.`};
   }
   if (!passwordPolicy.allowDuplicateInSameLock) {
-    const duplicated = passwords.some(item => item.id !== ignorePasswordId && item.lockId === lockId && item.code === code && activeForDuplicate(item));
+    const duplicated = passwords.some(item => (
+      item.id !== ignorePasswordId &&
+      item.lockId === lockId &&
+      item.code === code &&
+      activeForDuplicate(item) &&
+      windowsOverlap(item.validFrom, item.validTo, validFrom, validTo)
+    ));
     if (duplicated) {
-      return {ok: false, message: 'Mã này đang tồn tại trên cùng khóa và còn hiệu lực.'};
+      return {ok: false, message: 'Mã này đang tồn tại trên cùng khóa và bị trùng thời hạn hiệu lực.'};
     }
   }
   return {ok: true};
+}
+
+async function syncPasswordCredential(item: PasswordCredential) {
+  await MockCredentialRepository.upsertPasswordCredential({
+    passwordId: item.id,
+    title: item.title,
+    ownerId: item.ownerId,
+    ownerName: item.ownerName,
+    lockId: item.lockId,
+    lockName: item.lockName,
+    roomName: item.roomName,
+    status: nowStatus(item),
+    syncState: item.syncState,
+    expiresAt: item.validTo,
+  });
 }
 
 export function getPasswordKindLabel(kind: PasswordKind) {
@@ -231,7 +309,7 @@ export const MockPasswordRepository = {
 
   async createPassword(input: CreatePasswordInput) {
     await wait(240);
-    const validation = validatePasswordCode(input.code, input.lockId);
+    const validation = validatePasswordCode(input.code, input.lockId, undefined, input.validFrom, input.validTo);
     if (!validation.ok) {
       throw new Error(validation.message);
     }
@@ -271,16 +349,7 @@ export const MockPasswordRepository = {
       maxUseCount: input.kind === 'oneTime' ? 1 : undefined,
     };
     passwords.unshift(credential);
-
-    const draft: Credential = await MockCredentialRepository.createDraftCredential({
-      type: 'password',
-      ownerId: owner.id,
-      lockId: lock.id,
-      lockName: lock.name,
-    });
-    if (draft) {
-      await MockCredentialRepository.revokeCredential(draft.id, 'System: draft chuyển thành PasswordCredential');
-    }
+    await syncPasswordCredential(credential);
     return clonePassword(credential);
   },
 
@@ -301,6 +370,9 @@ export const MockPasswordRepository = {
       };
       return updated;
     });
+    if (updated) {
+      await MockCredentialRepository.updatePasswordCredentialStatus(updated.id, updated.status, updated.syncState, revokedBy);
+    }
     return updated ? clonePassword(updated) : undefined;
   },
 
@@ -314,6 +386,9 @@ export const MockPasswordRepository = {
       updated = {...item, status: 'paused', pauseReason: reason, updatedAt: Date.now()};
       return updated;
     });
+    if (updated) {
+      await MockCredentialRepository.updatePasswordCredentialStatus(updated.id, updated.status, updated.syncState);
+    }
     return updated ? clonePassword(updated) : undefined;
   },
 
@@ -324,9 +399,13 @@ export const MockPasswordRepository = {
       if (item.id !== passwordId) {
         return item;
       }
-      updated = {...item, status: 'active', pauseReason: undefined, updatedAt: Date.now()};
+      const nextStatus: PasswordStatus = item.validTo && item.validTo < Date.now() ? 'expired' : 'active';
+      updated = {...item, status: nextStatus, pauseReason: undefined, updatedAt: Date.now()};
       return updated;
     });
+    if (updated) {
+      await MockCredentialRepository.updatePasswordCredentialStatus(updated.id, updated.status, updated.syncState);
+    }
     return updated ? clonePassword(updated) : undefined;
   },
 
@@ -341,6 +420,9 @@ export const MockPasswordRepository = {
       updated = {...item, validTo: base + days * DAY, status: item.status === 'expired' ? 'active' : item.status, updatedAt: Date.now()};
       return updated;
     });
+    if (updated) {
+      await syncPasswordCredential(updated);
+    }
     return updated ? clonePassword(updated) : undefined;
   },
 
@@ -354,6 +436,9 @@ export const MockPasswordRepository = {
       updated = {...item, kind: 'recurring', scheduleRule, updatedAt: Date.now()};
       return updated;
     });
+    if (updated) {
+      await syncPasswordCredential(updated);
+    }
     return updated ? clonePassword(updated) : undefined;
   },
 
@@ -363,24 +448,28 @@ export const MockPasswordRepository = {
     if (!item) {
       throw new Error('Không tìm thấy mật khẩu.');
     }
-    const status = nowStatus(item);
-    const success = status === 'active' || status === 'pendingSync';
+    const at = Date.now();
+    const blockedReason = getUseBlockReason(item, at);
+    const success = !blockedReason;
     let updated: PasswordCredential | undefined;
     passwords = passwords.map(password => {
       if (password.id !== passwordId) {
         return password;
       }
       const nextUsedCount = success ? password.useCount + 1 : password.useCount;
-      const nextStatus = success && password.kind === 'oneTime' ? 'used' : status;
+      const nextStatus = success && password.kind === 'oneTime' ? 'used' : nowStatus(password, at);
       updated = {
         ...password,
         status: nextStatus,
         useCount: nextUsedCount,
-        lastUsedAt: success ? Date.now() : password.lastUsedAt,
-        updatedAt: Date.now(),
+        lastUsedAt: success ? at : password.lastUsedAt,
+        updatedAt: at,
       };
       return updated;
     });
+    if (updated) {
+      await MockCredentialRepository.updatePasswordCredentialStatus(updated.id, updated.status, updated.syncState);
+    }
     const record: AccessRecord = {
       id: `record-password-${Date.now()}`,
       lockId: item.lockId,
@@ -389,7 +478,7 @@ export const MockPasswordRepository = {
       method: 'PIN',
       result: success ? 'success' : 'failed',
       actorName: item.ownerName,
-      message: success ? `${item.title} mở khóa thành công bằng mã PIN mock.` : `${item.title} bị từ chối vì trạng thái ${getPasswordStatusLabel(status)}.`,
+      message: success ? `${item.title} mở khóa thành công bằng mã PIN mock.` : `${item.title} bị từ chối vì ${blockedReason}.`,
       createdAt: Date.now(),
     };
     await MockLockRepository.addAccessRecord(record);

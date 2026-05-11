@@ -1,0 +1,117 @@
+import colors from 'configuration/colors';
+import {StyleSheet} from 'react-native';
+
+import {DesignSystem} from 'theme/designSystem';
+
+type AdaptiveLike = {
+  s: (value: number) => number;
+  fs: (value: number, minFactor?: number, maxFactor?: number) => number;
+};
+
+const createStyles = (adaptive: AdaptiveLike, design: DesignSystem) => {
+  const {spacing, radius, icon, font} = design;
+
+  return StyleSheet.create({
+    buttonBack: {
+      paddingHorizontal: spacing.xl,
+      paddingVertical: spacing.sm,
+      marginTop: spacing.sm,
+      borderRadius: radius.md,
+      backgroundColor: colors.yellow,
+      width: '100%',
+      justifyContent: 'center',
+      alignItems: 'center',
+      minHeight: design.control.buttonHeight,
+    },
+    button: {
+      paddingHorizontal: spacing.xl,
+      paddingVertical: spacing.sm,
+      marginBottom: spacing.sm,
+      borderRadius: radius.md,
+      backgroundColor: colors.primary,
+      justifyContent: 'center',
+      alignItems: 'center',
+      minHeight: design.control.buttonHeight,
+    },
+    buttonSelected: {
+      backgroundColor: colors.statusBar,
+    },
+    webcamContainer: {
+      backgroundColor: colors.black,
+      height: '100%',
+      width: '100%',
+      overflow: 'hidden',
+      borderRadius: radius.lg,
+    },
+    webcam: {
+      width: '100%',
+      height: '100%',
+      backgroundColor: colors.black,
+      marginLeft: 0.5,
+    },
+    videoResize: {
+      width: adaptive.s(300),
+      height: adaptive.s(200),
+      backgroundColor: 'black',
+    },
+    fullWidth: {
+      width: '100%',
+    },
+    iconBack: {
+      width: icon.sm,
+      height: icon.sm,
+      marginRight: spacing.xs,
+    },
+    buttonShare: {
+      position: 'absolute',
+      top: spacing.md,
+      right: spacing.md,
+      padding: spacing.md,
+      backgroundColor: colors.lightPrimary1,
+      borderRadius: radius.md,
+    },
+    iconShare: {
+      width: icon.lg,
+      height: icon.lg,
+    },
+    container: {flex: 1, alignItems: 'center', justifyContent: 'center'},
+    video: {width: '90%', height: adaptive.s(300)},
+    label: {marginTop: spacing.sm, fontSize: font.body},
+    slider: {width: adaptive.s(150), marginTop: spacing.sm, alignItems: 'center'},
+    controls: {flexDirection: 'row', marginTop: spacing.sm},
+    itemContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      borderBottomWidth: design.border.hairline,
+      width: '100%',
+      marginTop: spacing.xs,
+      justifyContent: 'space-between',
+    },
+    selectITem: {
+      width: '100%',
+      backgroundColor: colors.yellow,
+    },
+    unselectItem: {
+      borderColor: colors.gray,
+    },
+    thumbnail: {
+      width: adaptive.s(120),
+      height: adaptive.s(90),
+      borderRadius: radius.sm,
+    },
+    details: {
+      alignItems: 'center',
+      flexDirection: 'row',
+    },
+    duration: {
+      fontSize: font.body,
+      fontWeight: 'bold',
+      color: colors.black,
+    },
+    videoContainer: {
+      flex: 1,
+    },
+  });
+};
+
+export default createStyles;

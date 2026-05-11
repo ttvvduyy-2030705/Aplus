@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {Pressable, StyleSheet, View} from 'react-native';
 import {BaseScreen} from '@/components/base/BaseScreen';
 import {AplusButton} from '@/components/base/AplusButton';
@@ -71,6 +71,10 @@ function CredentialTypeCard({type, lockId}: {type: CredentialType; lockId?: stri
   const check = evaluateCredentialOption(lock, type);
 
   const open = () => {
+    if (type === 'admin') {
+      navigation.navigate('StaffTenant');
+      return;
+    }
     if (check.enabled) {
       navigation.navigate('RecipientPicker', {lockId, credentialType: type});
       return;
@@ -129,18 +133,18 @@ export function CredentialHubScreen({lockId}: {lockId?: string}) {
   const [credentials, setCredentials] = useState<Credential[]>([]);
   const [summary, setSummary] = useState({total: 0, active: 0, pending: 0, revoked: 0, unsupported: 0});
 
-  const load = async () => {
+  const load = useCallback(async () => {
     const [list, nextSummary] = await Promise.all([
       MockCredentialRepository.getCredentials(lockId),
       MockCredentialRepository.getCredentialSummary(lockId),
     ]);
     setCredentials(list);
     setSummary(nextSummary);
-  };
+  }, [lockId]);
 
   useEffect(() => {
     load();
-  }, [lockId]);
+  }, [load]);
 
   const lockSubtitle = lock ? `${lock.name} · ${lock.roomName}` : 'Toàn hệ thống · chọn khóa ở flow sau';
   const roleLabel = useMemo(() => getRoleLabel('Owner'), []);

@@ -1,0 +1,23 @@
+export type Screens = {
+  home: string;
+  livePlatform: string;
+  livePlatformSetup: string;
+  livePlatformSetupFacebook: string;
+  livePlatformSetupYoutube: string;
+  livePlatformSetupTiktok: string;
+  gameSettings: string;
+  gamePlay: string;
+  history: string;
+  playback: string;
+  configs: string;
+  restaurantMenu: string;
+  restaurantCart: string;
+  restaurantAdminLogin: string;
+  restaurantAdminDashboard: string;
+  //Helper
+  overlay: string;
+};
+
+export type Scenes = {
+  [key: string]: any;
+};

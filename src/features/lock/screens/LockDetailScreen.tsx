@@ -129,7 +129,11 @@ export function LockDetailScreen({lockId}: {lockId: string}) {
       </View>
       <View style={styles.gridRow}>
         <QuickActionTile icon="phone" title="Ủy quyền phone" subtitle="Invite QR/link" onPress={() => navigation.navigate('PhoneAuthorization', {lockId: lock.id})} />
+        <QuickActionTile icon="hotel" title="Phòng" subtitle="UI-11/51 gán khóa" onPress={() => navigation.navigate('RoomManagement')} />
+      </View>
+      <View style={styles.gridRow}>
         <QuickActionTile icon="more" title="More" subtitle="Settings, OTA, alarm" onPress={() => navigation.navigate('MoreHub', {lockId: lock.id})} />
+        <QuickActionTile icon="settings" title="Cài đặt khóa" subtitle="UI-29/42/43/44" onPress={() => navigation.navigate('DeviceSettings', {lockId: lock.id})} />
       </View>
 
       <AplusCard style={styles.card}>
@@ -145,7 +149,12 @@ export function LockDetailScreen({lockId}: {lockId: string}) {
         ) : (
           <AplusText variant="caption">Command và mật khẩu mock sẽ ghi vào Records để kiểm thử audit.</AplusText>
         )}
-        <AplusButton title="Xem lịch sử" leftIcon="history" variant="secondary" onPress={() => navigation.navigate('Activity')} />
+        <View style={styles.actionRow}>
+          <AplusButton title="Lịch sử" leftIcon="history" variant="secondary" onPress={() => navigation.navigate('Activity')} style={styles.flexButton} />
+          <AplusButton title="Cảnh báo" leftIcon="alert" variant="secondary" onPress={() => navigation.navigate('AlarmCenter', {lockId: lock.id})} style={styles.flexButton} />
+          <AplusButton title="Pin" leftIcon="battery" variant="secondary" onPress={() => navigation.navigate('BatteryPower', {lockId: lock.id})} style={styles.flexButton} />
+          <AplusButton title="Phòng" leftIcon="hotel" variant="secondary" onPress={() => navigation.navigate('RoomManagement')} style={styles.flexButton} />
+        </View>
       </AplusCard>
     </BaseScreen>
   );
@@ -188,7 +197,8 @@ const styles = StyleSheet.create({
     gap: theme.spacing.md,
   },
   flexButton: {
-    flex: 1,
+    flexBasis: '30%',
+    flexGrow: 1,
   },
   warningCard: {
     borderColor: 'rgba(253,176,34,0.34)',
@@ -234,6 +244,11 @@ const styles = StyleSheet.create({
     gap: theme.spacing.md,
   },
   card: {
+    gap: theme.spacing.md,
+  },
+  actionRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: theme.spacing.md,
   },
 });

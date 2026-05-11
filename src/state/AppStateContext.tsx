@@ -1,10 +1,16 @@
 import React, {createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState} from 'react';
 import {NativeAdapters} from '@/services/adapters/nativeAdapters';
 import {MockAuthRepository} from '@/services/repositories/MockAuthRepository';
+import {MockAccountRepository} from '@/services/repositories/MockAccountRepository';
 import {MockLockRepository} from '@/services/repositories/MockLockRepository';
 import {createSessionStore} from '@/services/session/SessionStore';
+import type {Alert, AlertFilter, AlertSummary, CreateTicketInput, IncidentTicket, NotificationPolicy} from '@/types/alert';
 import type {AplusUser, AuthActionResult, AuthSession, OtpChallenge, OtpFlow, RegisterInput, ResetPasswordInput, TrustedDeviceSession} from '@/types/auth';
-import type {AccessRecord, AplusHome, AplusLock, LockCommand, LockCommandAuthMethod, LockCommandScenario, LockCommandStatus, LockCommandType, LockDashboardSummary, LockFilterType, RemoteUnlockCheck} from '@/types/lock';
+import type {AccessRecord, AplusHome, AplusLock, BatteryReport, DeviceCapabilityMatrix, DeviceDiagnostic, FirmwareInfo, LockCommand, LockCommandAuthMethod, LockCommandScenario, LockCommandStatus, LockCommandType, LockDashboardSummary, LockFilterType, LockSettings, RecordNote, RemoteUnlockCheck} from '@/types/lock';
+import type {PairingCreateLockInput, PairingGateway} from '@/types/pairing';
+import type {Room, RoomBuilding, RoomDetail, RoomFilter, RoomFloor, RoomFormInput, RoomImportPreviewRow, RoomSummary} from '@/types/room';
+import type {AnalyticsFilter, AnalyticsSummary, MethodBreakdown, ReportExport, ReportExportFormat, RiskLock, TimeSeriesPoint, UserBreakdown} from '@/types/report';
+import type {AppLanguageCode, AppPinSettings, BrandingConfig, LocalizationResource, TrustedDevice} from '@/types/account';
 
 const REMOTE_UNLOCK_APP_PIN = '2580';
 
@@ -33,6 +39,34 @@ type AppStateValue = {
   isOffline: boolean;
   lockCommands: LockCommand[];
   accessRecords: AccessRecord[];
+  pairingGateways: PairingGateway[];
+  pairingLoading: boolean;
+  pairingError?: string;
+  alerts: Alert[];
+  alertSummary: AlertSummary;
+  incidentTickets: IncidentTicket[];
+  notificationPolicy?: NotificationPolicy;
+  alertsLoading: boolean;
+  roomBuildings: RoomBuilding[];
+  roomFloors: RoomFloor[];
+  rooms: Room[];
+  roomSummary: RoomSummary;
+  roomsLoading: boolean;
+  roomsError?: string;
+  analyticsFilter: AnalyticsFilter;
+  analyticsSummary?: AnalyticsSummary;
+  methodBreakdown: MethodBreakdown[];
+  userBreakdown: UserBreakdown[];
+  riskLocks: RiskLock[];
+  reportTimeSeries: TimeSeriesPoint[];
+  reportsLoading: boolean;
+  lastReportExport?: ReportExport;
+  currentLanguage: AppLanguageCode;
+  appPinSettings?: AppPinSettings;
+  trustedDevices: TrustedDevice[];
+  brandingConfig?: BrandingConfig;
+  localizationResources: LocalizationResource[];
+  accountSecurityLoading: boolean;
   remoteUnlockPin: string;
   loginWithPassword: (account: string, password: string) => Promise<AuthActionResult>;
   loginWithBiometric: () => Promise<AuthActionResult>;
@@ -46,14 +80,61 @@ type AppStateValue = {
   clearAuthError: () => void;
   reloadLocks: (filter?: LockFilterType) => Promise<void>;
   reloadAccessRecords: (lockId?: string) => Promise<void>;
+  getAccessRecordDetail: (recordId: string) => Promise<AccessRecord | undefined>;
+  saveAccessRecordNote: (recordId: string, note: string) => Promise<RecordNote | undefined>;
+  getBatteryReports: (lockId?: string) => Promise<BatteryReport[]>;
+  reloadAlerts: (filter?: AlertFilter) => Promise<void>;
+  getAlertDetail: (alertId: string) => Promise<Alert | undefined>;
+  markAlertRead: (alertId: string) => Promise<Alert | undefined>;
+  resolveAlert: (alertId: string, note?: string) => Promise<Alert | undefined>;
+  ignoreAlert: (alertId: string, note?: string) => Promise<Alert | undefined>;
+  createIncidentTicket: (input: CreateTicketInput) => Promise<IncidentTicket | undefined>;
+  reloadIncidentTickets: (alertId?: string) => Promise<void>;
+  reloadNotificationPolicy: () => Promise<void>;
+  updateNotificationPolicy: (patch: Partial<NotificationPolicy>) => Promise<NotificationPolicy>;
+  reloadRooms: (filter?: RoomFilter) => Promise<void>;
+  getRoomDetail: (roomId: string) => Promise<RoomDetail | undefined>;
+  saveRoom: (input: RoomFormInput) => Promise<Room | undefined>;
+  deleteRoom: (roomId: string) => Promise<{success: boolean; message: string}>;
+  assignLockToRoom: (roomId: string, lockId: string) => Promise<RoomDetail | undefined>;
+  previewRoomImport: (csvText: string) => Promise<RoomImportPreviewRow[]>;
+  commitRoomImport: (csvText: string) => Promise<RoomImportPreviewRow[]>;
+  reloadAnalytics: (filter?: Partial<AnalyticsFilter>) => Promise<void>;
+  updateAnalyticsFilter: (patch: Partial<AnalyticsFilter>) => Promise<void>;
+  exportAnalyticsReport: (format: ReportExportFormat) => Promise<ReportExport>;
+  reloadAccountSecurity: () => Promise<void>;
+  updateAppPinSettings: (patch: Partial<AppPinSettings>) => Promise<AppPinSettings>;
+  setAppPin: (pin: string) => Promise<AppPinSettings>;
+  verifyAppPin: (pin: string) => Promise<boolean>;
+  changeLanguage: (language: AppLanguageCode) => Promise<AppLanguageCode>;
+  updateBrandingConfig: (patch: Partial<BrandingConfig>) => Promise<BrandingConfig>;
+  revokeTrustedDevice: (deviceId: string) => Promise<TrustedDevice[]>;
+  renameTrustedDevice: (deviceId: string, name: string) => Promise<TrustedDevice[]>;
   setLockFilter: (filter: LockFilterType) => Promise<void>;
   addDemoLock: (preferredType?: LockFilterType) => Promise<AplusLock | undefined>;
   toggleLockMock: (lockId: string) => void;
   setOfflineMock: (offline: boolean) => void;
+  reloadPairingGateways: () => Promise<void>;
+  isPairingSerialBound: (serial: string) => Promise<boolean>;
+  addPairedLock: (input: PairingCreateLockInput) => Promise<AplusLock | undefined>;
+  updateLockSettings: (lockId: string, patch: Partial<LockSettings>) => Promise<AplusLock | undefined>;
+  getDeviceDiagnostic: (lockId: string) => Promise<DeviceDiagnostic | undefined>;
+  getFirmwareInfo: (lockId: string) => Promise<FirmwareInfo | undefined>;
+  applyFirmwareVersion: (lockId: string, version: string) => Promise<AplusLock | undefined>;
+  getCapabilityMatrix: (lockId: string) => Promise<DeviceCapabilityMatrix | undefined>;
   evaluateRemoteUnlock: (lockId: string) => RemoteUnlockCheck;
   startLockCommand: (input: {lockId: string; type: LockCommandType; scenario?: LockCommandScenario; authMethod?: LockCommandAuthMethod}) => Promise<LockCommand | undefined>;
   findCommand: (commandId: string) => LockCommand | undefined;
   findLock: (lockId: string) => AplusLock | undefined;
+};
+
+const emptyAlertSummary: AlertSummary = {
+  total: 0,
+  unread: 0,
+  critical: 0,
+  high: 0,
+  ticketsOpen: 0,
+  resolved: 0,
 };
 
 const emptySummary: LockDashboardSummary = {
@@ -63,6 +144,23 @@ const emptySummary: LockDashboardSummary = {
   lowBatteryLocks: 0,
   alertLocks: 0,
   pendingSyncLocks: 0,
+};
+
+const emptyRoomSummary: RoomSummary = {
+  buildings: 0,
+  floors: 0,
+  rooms: 0,
+  assignedRooms: 0,
+  unassignedRooms: 0,
+  blockedRooms: 0,
+};
+
+const defaultAnalyticsFilter: AnalyticsFilter = {
+  dateRange: 'week',
+  homeType: 'all',
+  method: 'all',
+  result: 'all',
+  query: '',
 };
 
 const AppStateContext = createContext<AppStateValue | undefined>(undefined);
@@ -138,8 +236,102 @@ export function AppStateProvider({children}: {children: ReactNode}) {
   const [isOffline, setIsOffline] = useState(false);
   const [lockCommands, setLockCommands] = useState<LockCommand[]>([]);
   const [accessRecords, setAccessRecords] = useState<AccessRecord[]>([]);
+  const [pairingGateways, setPairingGateways] = useState<PairingGateway[]>([]);
+  const [pairingLoading, setPairingLoading] = useState(false);
+  const [pairingError, setPairingError] = useState<string | undefined>();
+  const [alerts, setAlerts] = useState<Alert[]>([]);
+  const [alertSummary, setAlertSummary] = useState<AlertSummary>(emptyAlertSummary);
+  const [incidentTickets, setIncidentTickets] = useState<IncidentTicket[]>([]);
+  const [notificationPolicy, setNotificationPolicy] = useState<NotificationPolicy | undefined>();
+  const [alertsLoading, setAlertsLoading] = useState(false);
+  const [roomBuildings, setRoomBuildings] = useState<RoomBuilding[]>([]);
+  const [roomFloors, setRoomFloors] = useState<RoomFloor[]>([]);
+  const [rooms, setRooms] = useState<Room[]>([]);
+  const [roomSummary, setRoomSummary] = useState<RoomSummary>(emptyRoomSummary);
+  const [roomsLoading, setRoomsLoading] = useState(false);
+  const [roomsError, setRoomsError] = useState<string | undefined>();
+  const [analyticsFilter, setAnalyticsFilter] = useState<AnalyticsFilter>(defaultAnalyticsFilter);
+  const [analyticsSummary, setAnalyticsSummary] = useState<AnalyticsSummary | undefined>();
+  const [methodBreakdown, setMethodBreakdown] = useState<MethodBreakdown[]>([]);
+  const [userBreakdown, setUserBreakdown] = useState<UserBreakdown[]>([]);
+  const [riskLocks, setRiskLocks] = useState<RiskLock[]>([]);
+  const [reportTimeSeries, setReportTimeSeries] = useState<TimeSeriesPoint[]>([]);
+  const [reportsLoading, setReportsLoading] = useState(false);
+  const [lastReportExport, setLastReportExport] = useState<ReportExport | undefined>();
+  const [currentLanguage, setCurrentLanguage] = useState<AppLanguageCode>('vi');
+  const [appPinSettings, setAppPinSettingsState] = useState<AppPinSettings | undefined>();
+  const [trustedDevices, setTrustedDevices] = useState<TrustedDevice[]>([]);
+  const [brandingConfig, setBrandingConfig] = useState<BrandingConfig | undefined>();
+  const [localizationResources, setLocalizationResources] = useState<LocalizationResource[]>([]);
+  const [accountSecurityLoading, setAccountSecurityLoading] = useState(false);
 
-  const reloadLocks = useCallback(async (filter: LockFilterType = selectedLockFilter) => {
+  const reloadAccountSecurity = useCallback(async () => {
+    setAccountSecurityLoading(true);
+    try {
+      const [pinData, deviceData, brandingData, resourceData, languageData] = await Promise.all([
+        MockAccountRepository.getAppPinSettings(),
+        MockAccountRepository.getTrustedDevices(),
+        MockAccountRepository.getBrandingConfig(),
+        MockAccountRepository.getLocalizationResources(),
+        MockAccountRepository.getLanguage(),
+      ]);
+      setAppPinSettingsState(pinData);
+      setTrustedDevices(deviceData);
+      setBrandingConfig(brandingData);
+      setLocalizationResources(resourceData);
+      setCurrentLanguage(languageData);
+    } finally {
+      setAccountSecurityLoading(false);
+    }
+  }, []);
+
+  const updateAppPinSettings = useCallback(async (patch: Partial<AppPinSettings>) => {
+    const updated = await MockAccountRepository.updateAppPinSettings(patch);
+    setAppPinSettingsState(updated);
+    return updated;
+  }, []);
+
+  const setAppPin = useCallback(async (pin: string) => {
+    const updated = await MockAccountRepository.setAppPin(pin);
+    setAppPinSettingsState(updated);
+    return updated;
+  }, []);
+
+  const verifyAppPin = useCallback(async (pin: string) => {
+    const success = await MockAccountRepository.verifyAppPin(pin);
+    setAppPinSettingsState(await MockAccountRepository.getAppPinSettings());
+    return success;
+  }, []);
+
+  const changeLanguage = useCallback(async (language: AppLanguageCode) => {
+    const updated = await MockAccountRepository.setLanguage(language);
+    setCurrentLanguage(updated);
+    return updated;
+  }, []);
+
+  const updateBrandingConfig = useCallback(async (patch: Partial<BrandingConfig>) => {
+    const updated = await MockAccountRepository.updateBrandingConfig(patch);
+    setBrandingConfig(updated);
+    return updated;
+  }, []);
+
+  const revokeTrustedDevice = useCallback(async (deviceId: string) => {
+    const updated = await MockAccountRepository.revokeTrustedDevice(deviceId);
+    setTrustedDevices(updated);
+    if (deviceId === auth.trustedDevice?.trustedDeviceId) {
+      await sessionStore.clearTrustedDevice();
+      setAuth(prev => ({...prev, trustedDevice: undefined, canUseBiometric: false}));
+    }
+    return updated;
+  }, [auth.trustedDevice?.trustedDeviceId]);
+
+  const renameTrustedDevice = useCallback(async (deviceId: string, name: string) => {
+    const updated = await MockAccountRepository.renameTrustedDevice(deviceId, name);
+    setTrustedDevices(updated);
+    return updated;
+  }, []);
+
+  const reloadLocks = useCallback(async (filter: LockFilterType = 'all') => {
     setLocksLoading(true);
     setLocksError(undefined);
     try {
@@ -156,19 +348,300 @@ export function AppStateProvider({children}: {children: ReactNode}) {
     } finally {
       setLocksLoading(false);
     }
-  }, [selectedLockFilter]);
+  }, []);
 
   const reloadAccessRecords = useCallback(async (lockId?: string) => {
     const records = await MockLockRepository.getAccessRecords(lockId);
     setAccessRecords(records);
   }, []);
 
-  const setLockFilter = async (filter: LockFilterType) => {
+  const getAccessRecordDetail = useCallback((recordId: string) => MockLockRepository.getAccessRecordById(recordId), []);
+
+  const saveAccessRecordNote = useCallback(async (recordId: string, note: string) => {
+    const result = await MockLockRepository.saveAccessRecordNote(recordId, note);
+    if (result) {
+      setAccessRecords(prev => prev.map(record => record.id === recordId ? {...record, note: result.note} : record));
+    }
+    return result;
+  }, []);
+
+  const getBatteryReports = useCallback((lockId?: string) => MockLockRepository.getBatteryReports(lockId), []);
+
+  const reloadAlerts = useCallback(async (filter?: AlertFilter) => {
+    setAlertsLoading(true);
+    const [alertData, summaryData] = await Promise.all([
+      MockLockRepository.getAlerts(filter),
+      MockLockRepository.getAlertSummary(),
+    ]);
+    setAlerts(alertData);
+    setAlertSummary(summaryData);
+    setAlertsLoading(false);
+  }, []);
+
+  const getAlertDetail = useCallback((alertId: string) => MockLockRepository.getAlertById(alertId), []);
+
+  const markAlertRead = useCallback(async (alertId: string) => {
+    const updated = await MockLockRepository.markAlertRead(alertId);
+    if (updated) {
+      setAlerts(prev => prev.map(alert => alert.id === alertId ? updated : alert));
+      setAlertSummary(await MockLockRepository.getAlertSummary());
+    }
+    return updated;
+  }, []);
+
+  const resolveAlert = useCallback(async (alertId: string, note?: string) => {
+    const updated = await MockLockRepository.resolveAlert(alertId, note);
+    if (updated) {
+      setAlerts(prev => prev.map(alert => alert.id === alertId ? updated : alert));
+      const [summaryData, homeData, lockData, ticketData] = await Promise.all([
+        MockLockRepository.getAlertSummary(),
+        MockLockRepository.getHomes(),
+        MockLockRepository.getLocks(selectedLockFilter),
+        MockLockRepository.getIncidentTickets(),
+      ]);
+      setAlertSummary(summaryData);
+      setHomes(homeData);
+      setLocks(lockData);
+      setDashboardSummary(buildSummaryFromLocks(lockData));
+      setIncidentTickets(ticketData);
+    }
+    return updated;
+  }, [selectedLockFilter]);
+
+  const ignoreAlert = useCallback(async (alertId: string, note?: string) => {
+    const updated = await MockLockRepository.ignoreAlert(alertId, note);
+    if (updated) {
+      setAlerts(prev => prev.map(alert => alert.id === alertId ? updated : alert));
+      setAlertSummary(await MockLockRepository.getAlertSummary());
+    }
+    return updated;
+  }, []);
+
+  const createIncidentTicket = useCallback(async (input: CreateTicketInput) => {
+    const ticket = await MockLockRepository.createIncidentTicket(input);
+    if (ticket) {
+      const [alertData, summaryData, ticketData, recordData] = await Promise.all([
+        MockLockRepository.getAlerts(),
+        MockLockRepository.getAlertSummary(),
+        MockLockRepository.getIncidentTickets(),
+        MockLockRepository.getAccessRecords(),
+      ]);
+      setAlerts(alertData);
+      setAlertSummary(summaryData);
+      setIncidentTickets(ticketData);
+      setAccessRecords(recordData);
+    }
+    return ticket;
+  }, []);
+
+  const reloadIncidentTickets = useCallback(async (alertId?: string) => {
+    setIncidentTickets(await MockLockRepository.getIncidentTickets(alertId));
+  }, []);
+
+  const reloadNotificationPolicy = useCallback(async () => {
+    setNotificationPolicy(await MockLockRepository.getNotificationPolicy());
+  }, []);
+
+  const updateNotificationPolicy = useCallback(async (patch: Partial<NotificationPolicy>) => {
+    const updated = await MockLockRepository.updateNotificationPolicy(patch);
+    setNotificationPolicy(updated);
+    return updated;
+  }, []);
+
+  const reloadRooms = useCallback(async (filter?: RoomFilter) => {
+    setRoomsLoading(true);
+    setRoomsError(undefined);
+    try {
+      const [buildingData, floorData, roomData, summaryData] = await Promise.all([
+        MockLockRepository.getRoomBuildings(),
+        MockLockRepository.getRoomFloors(),
+        MockLockRepository.getRooms(filter),
+        MockLockRepository.getRoomSummary(),
+      ]);
+      setRoomBuildings(buildingData);
+      setRoomFloors(floorData);
+      setRooms(roomData);
+      setRoomSummary(summaryData);
+    } catch (error) {
+      setRoomsError(getAuthErrorMessage(error));
+    } finally {
+      setRoomsLoading(false);
+    }
+  }, []);
+
+  const getRoomDetail = useCallback((roomId: string) => MockLockRepository.getRoomById(roomId), []);
+
+  const saveRoom = useCallback(async (input: RoomFormInput) => {
+    try {
+      const room = await MockLockRepository.saveRoom(input);
+      const [roomData, summaryData, homeData, lockData] = await Promise.all([
+        MockLockRepository.getRooms(),
+        MockLockRepository.getRoomSummary(),
+        MockLockRepository.getHomes(),
+        MockLockRepository.getLocks(selectedLockFilter),
+      ]);
+      setRooms(roomData);
+      setRoomSummary(summaryData);
+      setHomes(homeData);
+      setLocks(lockData);
+      setDashboardSummary(await MockLockRepository.getDashboardSummary(selectedLockFilter));
+      return room;
+    } catch (error) {
+      setRoomsError(getAuthErrorMessage(error));
+      return undefined;
+    }
+  }, [selectedLockFilter]);
+
+  const deleteRoom = useCallback(async (roomId: string) => {
+    const result = await MockLockRepository.deleteRoom(roomId);
+    const [roomData, summaryData] = await Promise.all([
+      MockLockRepository.getRooms(),
+      MockLockRepository.getRoomSummary(),
+    ]);
+    setRooms(roomData);
+    setRoomSummary(summaryData);
+    return result;
+  }, []);
+
+  const assignLockToRoom = useCallback(async (roomId: string, lockId: string) => {
+    const detail = await MockLockRepository.assignLockToRoom(roomId, lockId);
+    const [roomData, summaryData, lockData, homeData, recordData] = await Promise.all([
+      MockLockRepository.getRooms(),
+      MockLockRepository.getRoomSummary(),
+      MockLockRepository.getLocks(selectedLockFilter),
+      MockLockRepository.getHomes(),
+      MockLockRepository.getAccessRecords(),
+    ]);
+    setRooms(roomData);
+    setRoomSummary(summaryData);
+    setLocks(lockData);
+    setHomes(homeData);
+    setDashboardSummary(buildSummaryFromLocks(lockData));
+    setAccessRecords(recordData);
+    return detail;
+  }, [selectedLockFilter]);
+
+  const previewRoomImport = useCallback((csvText: string) => MockLockRepository.previewRoomImport(csvText), []);
+
+  const commitRoomImport = useCallback(async (csvText: string) => {
+    const result = await MockLockRepository.commitRoomImport(csvText);
+    const [roomData, summaryData] = await Promise.all([
+      MockLockRepository.getRooms(),
+      MockLockRepository.getRoomSummary(),
+    ]);
+    setRooms(roomData);
+    setRoomSummary(summaryData);
+    return result;
+  }, []);
+
+
+  const reloadAnalytics = useCallback(async (filterPatch?: Partial<AnalyticsFilter>) => {
+    setReportsLoading(true);
+    const nextFilter = {...defaultAnalyticsFilter, ...filterPatch};
+    setAnalyticsFilter(nextFilter);
+    const [summaryData, methodData, userData, riskData, seriesData] = await Promise.all([
+      MockLockRepository.getAnalyticsSummary(nextFilter),
+      MockLockRepository.getMethodBreakdown(nextFilter),
+      MockLockRepository.getUserBreakdown(nextFilter),
+      MockLockRepository.getRiskLocks(nextFilter),
+      MockLockRepository.getReportTimeSeries(nextFilter),
+    ]);
+    setAnalyticsSummary(summaryData);
+    setMethodBreakdown(methodData);
+    setUserBreakdown(userData);
+    setRiskLocks(riskData);
+    setReportTimeSeries(seriesData);
+    setReportsLoading(false);
+  }, []);
+
+  const updateAnalyticsFilter = useCallback(async (patch: Partial<AnalyticsFilter>) => {
+    await reloadAnalytics({...analyticsFilter, ...patch});
+  }, [analyticsFilter, reloadAnalytics]);
+
+  const exportAnalyticsReport = useCallback(async (format: ReportExportFormat) => {
+    const exported = await MockLockRepository.exportAnalyticsReport(format, analyticsFilter);
+    setLastReportExport(exported);
+    return exported;
+  }, [analyticsFilter]);
+
+  const setLockFilter = useCallback(async (filter: LockFilterType) => {
     setSelectedLockFilter(filter);
     await reloadLocks(filter);
-  };
+  }, [reloadLocks]);
 
-  const addDemoLock = async (preferredType: LockFilterType = selectedLockFilter) => {
+
+  const reloadPairingGateways = useCallback(async () => {
+    setPairingError(undefined);
+    try {
+      const gateways = await MockLockRepository.getPairingGateways();
+      setPairingGateways(gateways);
+    } catch {
+      setPairingError('Không tải được Gateway/MQTT mock.');
+    }
+  }, []);
+
+  const isPairingSerialBound = useCallback(async (serial: string) => MockLockRepository.isSerialAlreadyBound(serial), []);
+
+  const addPairedLock = useCallback(async (input: PairingCreateLockInput) => {
+    setPairingLoading(true);
+    setPairingError(undefined);
+    try {
+      const createdLock = await MockLockRepository.addLockFromPairing(input);
+      const nextFilter = selectedLockFilter === 'all' ? 'all' : createdLock.homeType;
+      setSelectedLockFilter(nextFilter);
+      const [homeData, lockData, summaryData] = await Promise.all([
+        MockLockRepository.getHomes(),
+        MockLockRepository.getLocks(nextFilter),
+        MockLockRepository.getDashboardSummary(nextFilter),
+      ]);
+      setHomes(homeData);
+      setLocks(lockData);
+      setDashboardSummary(summaryData);
+      await reloadAccessRecords();
+      return createdLock;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Không tạo được khóa từ Pairing Wizard.';
+      setPairingError(message);
+      return undefined;
+    } finally {
+      setPairingLoading(false);
+    }
+  }, [reloadAccessRecords, selectedLockFilter]);
+
+
+  const updateLockSettings = useCallback(async (lockId: string, patch: Partial<LockSettings>) => {
+    const updatedLock = await MockLockRepository.updateLockSettings(lockId, patch);
+    if (!updatedLock) {
+      return undefined;
+    }
+    setLocks(prev => {
+      const next = prev.map(lock => (lock.id === lockId ? updatedLock : lock));
+      setDashboardSummary(buildSummaryFromLocks(next));
+      return next;
+    });
+    await reloadAccessRecords();
+    return updatedLock;
+  }, [reloadAccessRecords]);
+
+  const getDeviceDiagnostic = useCallback((lockId: string) => MockLockRepository.getDeviceDiagnostic(lockId), []);
+  const getFirmwareInfo = useCallback((lockId: string) => MockLockRepository.getFirmwareInfo(lockId), []);
+  const getCapabilityMatrix = useCallback((lockId: string) => MockLockRepository.getCapabilityMatrix(lockId), []);
+
+  const applyFirmwareVersion = useCallback(async (lockId: string, version: string) => {
+    const updatedLock = await MockLockRepository.applyFirmwareVersion(lockId, version);
+    if (!updatedLock) {
+      return undefined;
+    }
+    setLocks(prev => {
+      const next = prev.map(lock => (lock.id === lockId ? updatedLock : lock));
+      setDashboardSummary(buildSummaryFromLocks(next));
+      return next;
+    });
+    await reloadAccessRecords();
+    return updatedLock;
+  }, [reloadAccessRecords]);
+
+  const addDemoLock = useCallback(async (preferredType: LockFilterType = selectedLockFilter) => {
     setLocksLoading(true);
     setLocksError(undefined);
     try {
@@ -190,12 +663,18 @@ export function AppStateProvider({children}: {children: ReactNode}) {
     } finally {
       setLocksLoading(false);
     }
-  };
+  }, [selectedLockFilter]);
 
   useEffect(() => {
     reloadLocks('all');
     reloadAccessRecords();
-  }, []);
+    reloadPairingGateways();
+    reloadAlerts();
+    reloadIncidentTickets();
+    reloadNotificationPolicy();
+    reloadRooms();
+    reloadAnalytics(defaultAnalyticsFilter);
+  }, [reloadAccessRecords, reloadAlerts, reloadAnalytics, reloadIncidentTickets, reloadLocks, reloadNotificationPolicy, reloadPairingGateways, reloadRooms]);
 
   useEffect(() => {
     let mounted = true;
@@ -347,7 +826,8 @@ export function AppStateProvider({children}: {children: ReactNode}) {
     };
     await MockLockRepository.addAccessRecord(record);
     setAccessRecords(prev => [record, ...prev].slice(0, 40));
-  }, [auth.user?.name, locks]);
+    await reloadAlerts();
+  }, [auth.user?.name, locks, reloadAlerts]);
 
   const evaluateRemoteUnlock = useCallback((lockId: string): RemoteUnlockCheck => {
     const lock = locks.find(item => item.id === lockId);
@@ -459,7 +939,66 @@ export function AppStateProvider({children}: {children: ReactNode}) {
     isOffline,
     lockCommands,
     accessRecords,
-    remoteUnlockPin: REMOTE_UNLOCK_APP_PIN,
+    pairingGateways,
+    pairingLoading,
+    pairingError,
+    alerts,
+    alertSummary,
+    incidentTickets,
+    notificationPolicy,
+    alertsLoading,
+    roomBuildings,
+    roomFloors,
+    rooms,
+    roomSummary,
+    roomsLoading,
+    roomsError,
+    analyticsFilter,
+    analyticsSummary,
+    methodBreakdown,
+    userBreakdown,
+    riskLocks,
+    reportTimeSeries,
+    reportsLoading,
+    lastReportExport,
+    currentLanguage,
+    appPinSettings,
+    trustedDevices,
+    brandingConfig,
+    localizationResources,
+    accountSecurityLoading,
+    remoteUnlockPin: appPinSettings?.enabled ? appPinSettings.pinHash : REMOTE_UNLOCK_APP_PIN,
+
+    getAccessRecordDetail,
+    saveAccessRecordNote,
+    getBatteryReports,
+    reloadAlerts,
+    getAlertDetail,
+    markAlertRead,
+    resolveAlert,
+    ignoreAlert,
+    createIncidentTicket,
+    reloadIncidentTickets,
+    reloadNotificationPolicy,
+    updateNotificationPolicy,
+    reloadRooms,
+    getRoomDetail,
+    saveRoom,
+    deleteRoom,
+    assignLockToRoom,
+    previewRoomImport,
+    commitRoomImport,
+    reloadAnalytics,
+    updateAnalyticsFilter,
+    exportAnalyticsReport,
+    reloadAccountSecurity,
+    updateAppPinSettings,
+    setAppPin,
+    verifyAppPin,
+    changeLanguage,
+    updateBrandingConfig,
+    revokeTrustedDevice,
+    renameTrustedDevice,
 
     loginWithPassword: async (account, password) => {
       setAuth(prev => ({...prev, loading: true, error: undefined}));
@@ -621,6 +1160,14 @@ export function AppStateProvider({children}: {children: ReactNode}) {
     reloadAccessRecords,
     setLockFilter,
     addDemoLock,
+    reloadPairingGateways,
+    isPairingSerialBound,
+    addPairedLock,
+    updateLockSettings,
+    getDeviceDiagnostic,
+    getFirmwareInfo,
+    applyFirmwareVersion,
+    getCapabilityMatrix,
     toggleLockMock: (lockId: string) => {
       setLocks(prev => {
         const nextLocks = prev.map(lock => (
@@ -643,7 +1190,7 @@ export function AppStateProvider({children}: {children: ReactNode}) {
     startLockCommand,
     findCommand,
     findLock,
-  }), [accessRecords, auth, dashboardSummary, evaluateRemoteUnlock, findCommand, findLock, homes, isOffline, lockCommands, locks, locksError, locksLoading, reloadAccessRecords, reloadLocks, selectedLockFilter, startLockCommand]);
+  }), [accessRecords, alertSummary, alerts, alertsLoading, addDemoLock, addPairedLock, applyFirmwareVersion, auth, createIncidentTicket, dashboardSummary, evaluateRemoteUnlock, findCommand, findLock, getAccessRecordDetail, getAlertDetail, getBatteryReports, getCapabilityMatrix, getDeviceDiagnostic, getFirmwareInfo, homes, ignoreAlert, incidentTickets, isOffline, isPairingSerialBound, lockCommands, locks, locksError, locksLoading, pairingError, pairingGateways, pairingLoading, markAlertRead, notificationPolicy, reloadAlerts, reloadIncidentTickets, reloadNotificationPolicy, resolveAlert, saveAccessRecordNote, reloadAccessRecords, reloadLocks, reloadPairingGateways, reloadRooms, roomBuildings, roomFloors, roomSummary, rooms, roomsError, roomsLoading, saveRoom, selectedLockFilter, setLockFilter, startLockCommand, updateLockSettings, updateNotificationPolicy, getRoomDetail, deleteRoom, assignLockToRoom, previewRoomImport, commitRoomImport, analyticsFilter, analyticsSummary, methodBreakdown, userBreakdown, riskLocks, reportTimeSeries, reportsLoading, lastReportExport, reloadAnalytics, updateAnalyticsFilter, exportAnalyticsReport, currentLanguage, appPinSettings, trustedDevices, brandingConfig, localizationResources, accountSecurityLoading, reloadAccountSecurity, updateAppPinSettings, setAppPin, verifyAppPin, changeLanguage, updateBrandingConfig, revokeTrustedDevice, renameTrustedDevice]);
 
   return <AppStateContext.Provider value={value}>{children}</AppStateContext.Provider>;
 }

@@ -43,6 +43,56 @@ export type LockPermission = {
   canChangeSettings: boolean;
 };
 
+export type FirmwareInfo = {
+  currentVersion: string;
+  latestVersion?: string;
+  updateAvailable: boolean;
+  required: boolean;
+  packageSizeMb?: number;
+  channel: 'stable' | 'beta' | 'local';
+};
+
+export type DeviceDiagnosticIssue = {
+  code: string;
+  severity: 'ok' | 'warning' | 'critical';
+  title: string;
+  message: string;
+};
+
+export type DeviceDiagnostic = {
+  lockId: string;
+  healthScore: number;
+  status: 'healthy' | 'attention' | 'critical';
+  checkedAt: number;
+  connection: {
+    gatewayOnline: boolean;
+    signalPercent: number;
+    lastSeenAt: string;
+  };
+  battery: {
+    percent: number;
+    state: BatteryState;
+    threshold: number;
+  };
+  firmware: FirmwareInfo;
+  errorCodes: string[];
+  issues: DeviceDiagnosticIssue[];
+};
+
+export type DeviceCapabilityEntry = {
+  key: keyof LockCapabilities;
+  label: string;
+  enabled: boolean;
+  routeHint: string;
+};
+
+export type DeviceCapabilityMatrix = {
+  lockId: string;
+  model: string;
+  serial: string;
+  entries: DeviceCapabilityEntry[];
+};
+
 export type AplusLock = {
   id: string;
   serial: string;
@@ -110,7 +160,7 @@ export type LockCommand = {
   errorMessage?: string;
 };
 
-export type AccessRecordMethod = 'App Remote Unlock' | 'App Lock' | 'PIN' | 'Card' | 'Fingerprint' | 'Face' | 'System';
+export type AccessRecordMethod = 'App Remote Unlock' | 'App Lock' | 'PIN' | 'Card' | 'Fingerprint' | 'Face' | 'System' | 'Battery' | 'Gateway';
 export type AccessRecordResult = 'success' | 'failed' | 'timeout' | 'blocked';
 
 export type AccessRecord = {
@@ -121,9 +171,51 @@ export type AccessRecord = {
   method: AccessRecordMethod;
   result: AccessRecordResult;
   commandId?: string;
+  credentialId?: string;
+  personId?: string;
+  userId?: string;
+  ticketId?: string;
+  sourceIp?: string;
+  deviceName?: string;
+  failureReason?: string;
+  note?: string;
+  batteryPercentAtEvent?: number;
+  gatewayName?: string;
   actorName: string;
   message: string;
   createdAt: number;
+};
+
+export type RecordFilter = {
+  lockId?: string;
+  method?: AccessRecordMethod | 'all';
+  result?: AccessRecordResult | 'all';
+  query?: string;
+};
+
+export type RecordNote = {
+  recordId: string;
+  note: string;
+  updatedAt: number;
+};
+
+export type BatteryTrendPoint = {
+  label: string;
+  percent: number;
+};
+
+export type BatteryReport = {
+  lockId: string;
+  lockName: string;
+  roomName: string;
+  batteryPercent: number;
+  batteryState: BatteryState;
+  threshold: number;
+  lastAlertAt?: number;
+  alertActive: boolean;
+  trend: BatteryTrendPoint[];
+  estimatedDaysRemaining: number;
+  recommendedAction: string;
 };
 
 export type RemoteUnlockCheck = {

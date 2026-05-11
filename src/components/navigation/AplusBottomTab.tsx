@@ -20,7 +20,8 @@ const tabs: TabItem[] = [
   {route: 'Home', label: 'Nhà', icon: 'home'},
   {route: 'Access', label: 'Chìa khoá', icon: 'key'},
   {route: 'Activity', label: 'Lịch sử', icon: 'history'},
-  {route: 'Settings', label: 'Cài đặt', icon: 'settings'},
+  {route: 'MoreHub', label: 'Thêm', icon: 'more'},
+  {route: 'Profile', label: 'Tôi', icon: 'user'},
 ];
 
 export function AplusBottomTab({activeTab, onChange}: Props) {
@@ -42,8 +43,8 @@ export function AplusBottomTab({activeTab, onChange}: Props) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    gap: theme.spacing.sm,
-    paddingHorizontal: theme.spacing.md,
+    gap: theme.spacing.xs,
+    paddingHorizontal: theme.spacing.sm,
     paddingTop: theme.spacing.sm,
     paddingBottom: theme.spacing.md,
     backgroundColor: theme.colors.backgroundSoft,
@@ -52,8 +53,8 @@ const styles = StyleSheet.create({
   },
   item: {
     flex: 1,
-    minHeight: 58,
-    borderRadius: theme.radius.lg,
+    minHeight: 56,
+    borderRadius: theme.radius.md,
     alignItems: 'center',
     justifyContent: 'center',
     gap: 2,

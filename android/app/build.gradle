@@ -65,3 +65,56 @@ dependencies {
         implementation jscFlavor
     }
 }
+
+
+// Android Studio/Gradle fails if a local project contains both legacy PNG and
+// generated WebP launcher icons with the same resource name. Keep PNG icons as
+// the single source of truth and remove stale WebP launcher leftovers before
+// Android resources are merged. This is intentionally safe when no WebP files
+// exist, and it protects users who unzip a new build over an older folder.
+tasks.register("removeDuplicateLauncherWebp") {
+    doLast {
+        fileTree(dir: "src/main/res", includes: [
+            "mipmap-*/ic_launcher.webp",
+            "mipmap-*/ic_launcher_round.webp"
+        ]).forEach { File launcherWebp ->
+            if (launcherWebp.exists()) {
+                logger.lifecycle("Removing duplicate launcher resource: ${launcherWebp}")
+                if (!launcherWebp.delete()) {
+                    throw new GradleException("Could not delete duplicate launcher resource: ${launcherWebp}")
+                }
+            }
+        }
+    }
+}
+
+// Nếu người dùng giải nén bản Aplus Lock đè lên project Android cũ,
+// các native source cũ dưới package billiards_management vẫn còn trong
+// android/app/src/main/java và sẽ bị Kotlin compile, gây hàng loạt lỗi
+// thiếu BuildConfig/Billing/UVC/YouTube dependency. Batch Aplus Lock chỉ dùng
+// package com.aplus, nên dọn các source cũ này trước khi build.
+tasks.register("removeLegacyBilliardsNativeSources") {
+    doLast {
+        [
+            file("src/main/java/com/billiards_management"),
+            file("src/main/kotlin/com/billiards_management")
+        ].each { File legacyDir ->
+            if (legacyDir.exists()) {
+                logger.lifecycle("Removing legacy native source folder: ${legacyDir}")
+                delete legacyDir
+            }
+        }
+    }
+}
+
+tasks.named("preBuild").configure {
+    dependsOn("removeDuplicateLauncherWebp")
+    dependsOn("removeLegacyBilliardsNativeSources")
+}
+
+// Make sure stale sources are removed even when Gradle invokes compile tasks directly.
+tasks.matching { Task task ->
+    task.name.startsWith("compile") && task.name.endsWith("Kotlin")
+}.configureEach { Task task ->
+    task.dependsOn("removeLegacyBilliardsNativeSources")
+}

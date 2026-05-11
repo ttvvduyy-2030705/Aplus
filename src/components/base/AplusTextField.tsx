@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
     color: theme.colors.text,
     fontSize: theme.typography.sizes.md,
-    fontFamily: theme.typography.fontFamily.regular,
+    fontFamily: theme.typography.family,
   },
   inputError: {
     borderColor: theme.colors.danger,

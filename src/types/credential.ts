@@ -38,6 +38,7 @@ export type Person = {
   avatarLabel: string;
   scopeLabel: string;
   active: boolean;
+  createdAt?: number;
   expiresAt?: number;
 };
 
@@ -48,6 +49,91 @@ export type PermissionMatrixEntry = {
   label: string;
   permissions: PermissionSet;
   canGrantRoles: PersonRole[];
+};
+
+export type MembershipStatus = 'active' | 'pendingInvite' | 'expired' | 'revoked';
+export type MembershipScopeType = 'system' | 'home' | 'building' | 'floor' | 'room' | 'lock';
+
+export type Membership = {
+  id: string;
+  personId: string;
+  role: PersonRole;
+  scopeType: MembershipScopeType;
+  scopeId?: string;
+  scopeLabel: string;
+  permissions: PermissionSet;
+  status: MembershipStatus;
+  startsAt: number;
+  expiresAt?: number;
+  revokedAt?: number;
+  revokedBy?: string;
+  credentialIds: string[];
+};
+
+export type TenancyEmployment = {
+  id: string;
+  personId: string;
+  type: 'tenancy' | 'employment';
+  title: string;
+  scopeLabel: string;
+  startsAt: number;
+  endsAt?: number;
+  status: 'active' | 'ended' | 'expired';
+  note?: string;
+};
+
+export type InviteStatus = 'pending' | 'accepted' | 'expired' | 'revoked';
+export type InviteChannel = 'qr' | 'link' | 'email' | 'phone';
+
+export type UserInvite = {
+  id: string;
+  account: string;
+  role: PersonRole;
+  scopeType: MembershipScopeType;
+  scopeLabel: string;
+  channel: InviteChannel;
+  status: InviteStatus;
+  token: string;
+  inviteUrl: string;
+  qrPayload: string;
+  createdAt: number;
+  expiresAt: number;
+  acceptedAt?: number;
+  revokedAt?: number;
+};
+
+export type MemberProfile = {
+  person: Person;
+  membership: Membership;
+  relation?: TenancyEmployment;
+  activeCredentialCount: number;
+  revokedCredentialCount: number;
+  canCurrentUserGrant: boolean;
+};
+
+export type StaffSummary = {
+  total: number;
+  subAdmins: number;
+  staff: number;
+  tenants: number;
+  guests: number;
+  expiringSoon: number;
+  pendingInvites: number;
+};
+
+export type MemberFilter = {
+  role?: PersonRole | 'all';
+  status?: MembershipStatus | 'all';
+  query?: string;
+};
+
+export type CreateInviteInput = {
+  account: string;
+  role: PersonRole;
+  scopeType: MembershipScopeType;
+  scopeLabel: string;
+  channel: InviteChannel;
+  expiresInDays: number;
 };
 
 export type CredentialScope = {
