@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "module": "commonjs",
+    "target": "es2020",
+    "noEmit": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "paths": {"@/*": ["src/*"]}
+  },
+  "include": ["src/i18n/dictionary.ts", "src/i18n/LanguageContext.tsx", "src/components/base/AplusText.tsx", "src/components/base/AplusTextField.tsx", "src/components/base/AplusButton.tsx", "src/components/base/AplusIcon.tsx", "src/components/navigation/AplusBottomTab.tsx", "src/navigation/RootNavigator.tsx"]
+}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo, useMemo} from 'react';
 import {StyleProp, StyleSheet, TextInput, TextInputProps, View, ViewStyle} from 'react-native';
 import {theme} from '@/theme/theme';
 import {useLanguage} from '@/i18n/LanguageContext';
@@ -13,9 +13,12 @@ type Props = TextInputProps & {
   containerStyle?: StyleProp<ViewStyle>;
 };
 
-export function AplusTextField({label, error, leftIcon, containerStyle, style, placeholderTextColor, ...rest}: Props) {
+function AplusTextFieldComponent({label, error, leftIcon, containerStyle, style, placeholderTextColor, ...rest}: Props) {
   const {language} = useLanguage();
-  const translatedPlaceholder = typeof rest.placeholder === 'string' ? translateString(rest.placeholder, language) : rest.placeholder;
+  const translatedPlaceholder = useMemo(
+    () => typeof rest.placeholder === 'string' ? translateString(rest.placeholder, language) : rest.placeholder,
+    [language, rest.placeholder],
+  );
 
   return (
     <View style={[styles.container, containerStyle]}>
@@ -33,6 +36,8 @@ export function AplusTextField({label, error, leftIcon, containerStyle, style, p
     </View>
   );
 }
+
+export const AplusTextField = memo(AplusTextFieldComponent);
 
 const styles = StyleSheet.create({
   container: {

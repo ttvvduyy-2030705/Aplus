@@ -160,7 +160,7 @@ export type LockCommand = {
   errorMessage?: string;
 };
 
-export type AccessRecordMethod = 'App Remote Unlock' | 'App Lock' | 'PIN' | 'Card' | 'Fingerprint' | 'Face' | 'System' | 'Battery' | 'Gateway';
+export type AccessRecordMethod = 'App Remote Unlock' | 'App Lock' | 'PIN' | 'Card' | 'Fingerprint' | 'Face' | 'NFC' | 'System' | 'Battery' | 'Gateway';
 export type AccessRecordResult = 'success' | 'failed' | 'timeout' | 'blocked';
 
 export type AccessRecord = {

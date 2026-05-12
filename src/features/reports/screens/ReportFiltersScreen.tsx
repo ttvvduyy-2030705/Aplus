@@ -15,7 +15,7 @@ import type {AnalyticsFilter, ReportDateRange} from '@/types/report';
 
 const ranges: ReportDateRange[] = ['today', 'week', 'month', 'all'];
 const homeTypes: Array<LockFilterType | 'all'> = ['all', 'home', 'hotel', 'office'];
-const methods: Array<AccessRecordMethod | 'all'> = ['all', 'App Remote Unlock', 'PIN', 'Card', 'Fingerprint', 'Face', 'Gateway', 'Battery', 'System'];
+const methods: Array<AccessRecordMethod | 'all'> = ['all', 'App Remote Unlock', 'PIN', 'Card', 'Fingerprint', 'Face', 'NFC', 'Gateway', 'Battery', 'System'];
 const results: Array<AccessRecordResult | 'all'> = ['all', 'success', 'failed', 'timeout', 'blocked'];
 
 function Pill<T extends string>({label, value, active, onPress}: {label: string; value: T; active: boolean; onPress: (value: T) => void}) {

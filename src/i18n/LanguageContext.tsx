@@ -1,4 +1,4 @@
-import React, {createContext, ReactNode, useContext, useMemo} from 'react';
+import React, {createContext, ReactNode, useCallback, useContext, useMemo} from 'react';
 import type {AppLanguageCode} from '@/types/account';
 import {translateString} from './dictionary';
 
@@ -13,10 +13,12 @@ const LanguageContext = createContext<LanguageContextValue>({
 });
 
 export function LanguageProvider({language, children}: {language: AppLanguageCode; children: ReactNode}) {
+  const t = useCallback((text: string) => translateString(text, language), [language]);
+
   const value = useMemo<LanguageContextValue>(() => ({
     language,
-    t: (text: string) => translateString(text, language),
-  }), [language]);
+    t,
+  }), [language, t]);
 
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 }

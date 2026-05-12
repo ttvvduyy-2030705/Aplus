@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo, useCallback} from 'react';
 import {Pressable, StyleSheet, View} from 'react-native';
 import {theme} from '@/theme/theme';
 import {AplusText} from '@/components/base/AplusText';
@@ -24,13 +24,18 @@ const tabs: TabItem[] = [
   {route: 'Profile', label: 'Tôi', icon: 'user'},
 ];
 
-export function AplusBottomTab({activeTab, onChange}: Props) {
+function AplusBottomTabComponent({activeTab, onChange}: Props) {
+  const handleChange = useCallback((tab: MainTabRouteName) => {
+    if (tab !== activeTab) {
+      onChange(tab);
+    }
+  }, [activeTab, onChange]);
   return (
     <View style={styles.container}>
       {tabs.map(tab => {
         const active = activeTab === tab.route;
         return (
-          <Pressable key={tab.route} accessibilityRole="button" onPress={() => onChange(tab.route)} style={[styles.item, active ? styles.itemActive : null]}>
+          <Pressable key={tab.route} accessibilityRole="button" onPress={() => handleChange(tab.route)} style={[styles.item, active ? styles.itemActive : null]}>
             <AplusIcon name={tab.icon} size={23} color={active ? theme.colors.primary : theme.colors.textMuted} />
             <AplusText variant="caption" color={active ? theme.colors.text : theme.colors.textMuted}>{tab.label}</AplusText>
           </Pressable>
@@ -39,6 +44,8 @@ export function AplusBottomTab({activeTab, onChange}: Props) {
     </View>
   );
 }
+
+export const AplusBottomTab = memo(AplusBottomTabComponent);
 
 const styles = StyleSheet.create({
   container: {

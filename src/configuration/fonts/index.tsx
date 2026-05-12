@@ -1,23 +1,29 @@
+import {Platform} from 'react-native';
+
+// Không trỏ tới font custom khi project không có file .ttf/.otf đi kèm.
+// Dùng system font để tránh lỗi chữ tiếng Việt, ô vuông hoặc warning thiếu Nunito trên Android/iOS.
+const systemFont = Platform.select({
+  android: 'sans-serif',
+  ios: undefined,
+  default: undefined,
+});
+
 const fonts = {
+  System: {
+    regular: systemFont,
+    bold: systemFont,
+    black: systemFont,
+    italic: systemFont,
+  },
   Nunito: {
-    regular: 'Nunito-Regular',
-    bold: 'Nunito-Bold',
-    black: 'Nunito-Black',
-    italic: 'Nunito-Italic',
+    regular: systemFont,
+    bold: systemFont,
+    black: systemFont,
+    italic: systemFont,
   },
 };
 
-const getSelectedFont = (
-  name: string,
-  fontWeight: 'regular' | 'bold' | 'italic' | 'black' = 'regular',
-) => {
-  switch (name) {
-    case 'Nunito-Regular':
-      return fonts.Nunito[fontWeight];
-    default:
-      return fonts.Nunito[fontWeight];
-  }
-};
+const getSelectedFont = () => systemFont;
 
 export {getSelectedFont};
 export default fonts;

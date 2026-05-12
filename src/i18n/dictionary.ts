@@ -293,7 +293,6 @@ const phraseEn: Dictionary = {
   'ngôn ngữ': 'language',
   'tài khoản': 'account',
   'thiết bị': 'device',
-  'phòng': 'room',
   'tầng': 'floor',
   'toà': 'building',
   'tòa': 'building',
@@ -526,7 +525,364 @@ const extraEn: Dictionary = {
   'Kết thúc': 'End',
 };
 
-const exactEn: Dictionary = {...en, ...extraEn};
+
+
+const cleanupEn: Dictionary = {
+  'PIN mới cần 4-6 chữ số.': 'New PIN must be 4-6 digits.',
+  'PIN xác nhận chưa khớp.': 'PIN confirmation does not match.',
+  'PIN hiện tại không đúng. PIN mock ban đầu là 2580.': 'Current PIN is incorrect. The initial mock PIN is 2580.',
+  'Đã cập nhật App PIN. Remote Unlock sẽ dùng PIN mới ngay.': 'App PIN updated. Remote Unlock will use the new PIN immediately.',
+  'Đã bật App PIN.': 'App PIN enabled.',
+  'Đã tắt App PIN. Remote Unlock sẽ fallback PIN mock an toàn.': 'App PIN disabled. Remote Unlock will fall back to the safe mock PIN.',
+  'UI-61 · PIN cho thao tác nhạy cảm': 'UI-61 · PIN for sensitive actions',
+  'Dùng để xác thực remote unlock, transfer, revoke, factory reset và các flow nhạy cảm.': 'Used to verify remote unlock, transfer, revoke, factory reset and other sensitive flows.',
+  'Khi bật, Remote Unlock và thao tác nhạy cảm phải xác thực lại.': 'When enabled, Remote Unlock and sensitive actions require re-authentication.',
+  'Remote unlock, transfer, revoke, emergency card và API key.': 'Remote unlock, transfer, revoke, emergency card and API key.',
+  'Dùng adapter biometric mock nếu thiết bị tin cậy hỗ trợ.': 'Use the mock biometric adapter when a trusted device supports it.',
+  'PIN mock ban đầu là 2580. Sau khi đổi, màn Remote Unlock sẽ đọc PIN mới từ App PIN settings.': 'The initial mock PIN is 2580. After changing it, Remote Unlock reads the new PIN from App PIN settings.',
+  'Tự khóa app sau khi không hoạt động': 'Auto-lock app after inactivity',
+  'lần sai': 'wrong attempts',
+  '4-6 chữ số': '4-6 digits',
+  'Nhập lại PIN mới': 'Re-enter new PIN',
+  'Lưu PIN': 'Save PIN',
+  'Ngôn ngữ & branding': 'Language & branding',
+  'Tài khoản, ngôn ngữ, bảo mật và branding': 'Account, language, security and branding',
+  'Chưa có thông tin': 'No information yet',
+  'Hệ thống': 'System',
+  'Thiết lập tài khoản': 'Account setup',
+  'Phiên đăng nhập': 'Login session',
+  'Đăng xuất thường xoá active session. Đăng xuất và xoá thiết bị tin cậy sẽ tắt luôn biometric login mock.': 'Normal logout clears the active session. Logging out and removing the trusted device also disables mock biometric login.',
+  'Đăng xuất và xoá thiết bị tin cậy': 'Log out and remove trusted device',
+  'Xác nhận đăng xuất': 'Confirm logout',
+  'Bạn có chắc muốn đăng xuất?': 'Are you sure you want to log out?',
+  'Bạn có chắc muốn đăng xuất và xoá thiết bị tin cậy hiện tại?': 'Are you sure you want to log out and remove the current trusted device?',
+  'Bấm English hoặc Tiếng Việt để đổi ngôn ngữ toàn app ngay lập tức: tabbar, header, button, label, placeholder và các status chip dùng chung.': 'Tap English or Vietnamese to change the whole app immediately: tabbar, headers, buttons, labels, placeholders and shared status chips.',
+  'Đã chuyển toàn bộ app sang Tiếng Việt.': 'Switched the whole app to Vietnamese.',
+  'Logo đen': 'Black logo',
+  'Việt/Anh, tên hệ thống, hotline, điều khoản và chính sách.': 'Vietnamese/English, system name, hotline, terms and policies.',
+  'Bật cho thao tác nhạy cảm': 'Enabled for sensitive actions',
+  'Chưa bật': 'Not enabled',
+  'Đang tải...': 'Loading...',
+  'thiết bị': 'devices',
+  'tin cậy': 'trusted',
+  'rủi ro': 'risk',
+  'Batch 22 tách riêng tab Tôi khỏi More Hub để phần vận hành không bị lẫn với hồ sơ cá nhân.': 'Batch 22 separates the Me tab from More Hub so operations do not mix with the personal profile.',
+  'Không hardcode': 'No hardcode',
+  'Thiếu quyền': 'Missing permission',
+  'Có thể cấp': 'Can grant',
+  'Đủ điều kiện': 'Eligible',
+  'Cần re-auth': 'Needs re-auth',
+  'Không thể cấp quyền ngay': 'Cannot grant access yet',
+  'Danh sách người nhận mock': 'Mock recipient list',
+  'Tóm tắt cấp quyền': 'Grant summary',
+  'Người nhận:': 'Recipient:',
+  'Chưa chọn': 'Not selected',
+  'Tổng quyền': 'Total permissions',
+  'Chọn loại quyền': 'Choose access type',
+  'Credential gần đây': 'Recent credentials',
+  'Chưa có credential nào cho phạm vi này.': 'No credential exists in this scope.',
+  'Chọn loại quyền phía trên để tạo draft và chuyển sang batch chức năng tương ứng.': 'Choose an access type above to create a draft and open the corresponding feature batch.',
+  'Thu hồi mock': 'Mock revoke',
+  'Credential đã bị thu hồi mềm, không xoá cứng khỏi audit.': 'The credential was soft-revoked and not hard-deleted from audit.',
+  'Toàn hệ thống · chọn khóa ở flow sau': 'Whole system · select a lock in the next flow',
+  'Breakdown theo method': 'Breakdown by method',
+  'Drilldown nhanh': 'Quick drilldown',
+  'Drilldown sang Records / Alerts / Battery.': 'Drill down to Records / Alerts / Battery.',
+  'Biểu đồ ngày/giờ': 'Daily/hourly chart',
+  'Theo threshold': 'By threshold',
+  'CSV mock thay cho Excel': 'Mock CSV instead of Excel',
+  'Xem UI-46': 'View UI-46',
+  'Xem UI-69': 'View UI-69',
+  'Bỏ giả lập': 'Stop simulation',
+  'Test Wi‑Fi sai': 'Test wrong Wi‑Fi',
+  'Bind khóa vào Gateway / MQTT': 'Bind lock to Gateway / MQTT',
+  'Bind trực tiếp khóa vào gateway online.': 'Bind the lock directly to an online gateway.',
+  'Bật Bluetooth để dò thiết bị gần.': 'Enable Bluetooth to scan nearby devices.',
+  'Cho phép Nearby devices để scan BLE trên Android mới.': 'Allow Nearby devices to scan BLE on newer Android versions.',
+  'Cho phép notification để nhận trạng thái pairing và gateway.': 'Allow notifications to receive pairing and gateway status.',
+  'Bảo mật WPA/WPA2': 'WPA/WPA2 security',
+  'Chưa chọn khóa, hiển thị ma trận mặc định để kiểm tra flow.': 'No lock selected; showing the default matrix to test the flow.',
+  'Guard dùng lại cho các batch sau': 'Reusable guard for later batches',
+  'Flow không hỗ trợ sẽ bị khóa ở UI, không chỉ hiện toast.': 'Unsupported flows are locked in the UI, not just shown as a toast.',
+  'Thu hồi credential chuyển Revoked/PendingRevoke để giữ audit, không xoá cứng.': 'Revoking a credential switches it to Revoked/PendingRevoke to keep audit history, not hard-delete it.',
+
+  'Cho phép biometric fallback': 'Allow biometric fallback',
+  'Nhập lại PIN': 'Re-enter PIN',
+  'Bật/tắt PIN, đổi PIN, auto-lock và yêu cầu PIN cho thao tác nhạy cảm.': 'Enable/disable PIN, change PIN, configure auto-lock and require PIN for sensitive actions.',
+  'Quản lý thiết bị đăng nhập, biometric và revoke session khi nghi ngờ.': 'Manage login devices, biometrics and revoke sessions when suspicious.',
+  'Đăng xuất & xoá thiết bị tin cậy': 'Log out & remove trusted device',
+  'Phiên đăng nhập và thiết bị tin cậy sẽ bị xoá. Login sinh trắc học sẽ không còn hiển thị.': 'The login session and trusted device will be removed. Biometric login will no longer appear.',
+  'Phiên đăng nhập sẽ bị xoá và quay về màn Login. Thiết bị tin cậy vẫn được giữ để test biometric.': 'The login session will be cleared and return to Login. The trusted device is kept for biometric testing.',
+  'UI-62 · session, biometric và revoke': 'UI-62 · session, biometrics and revoke',
+  'Tin cậy': 'Trusted',
+  'Rủi ro': 'Risk',
+  'Hiện tại': 'Current',
+  'Đã revoke': 'Revoked',
+  'Lần cuối': 'Last seen',
+  'Tên thiết bị': 'Device name',
+  'Lưu tên': 'Save name',
+  'Đổi tên': 'Rename',
+  'Thiết bị hiện tại sẽ mất session và quay về Login.': 'The current device will lose its session and return to Login.',
+  'Thiết bị này sẽ mất quyền trusted device và biometric login.': 'This device will lose trusted-device access and biometric login.',
+  'Tổng quan đăng nhập': 'Login overview',
+  'UI-10 · Records từ dữ liệu thật mock': 'UI-10 · Records from real mock data',
+  'Tìm kiếm': 'Search',
+  'Tên khóa, phòng, người mở, credentialId, commandId': 'Lock name, room, actor, credentialId, commandId',
+  'Truy vết người mở, phương thức, lockId, commandId, credentialId, IP/device, lý do fail và ghi chú xử lý.': 'Trace actor, method, lockId, commandId, credentialId, IP/device, failure reason and handling notes.',
+  'Tổng record': 'Total records',
+  'Cần xử lý': 'Needs action',
+  'Không có record phù hợp': 'No matching records',
+  'Đổi filter hoặc mở khóa/thử thao tác pin để tạo record mới.': 'Change filters or unlock/test battery actions to create a new record.',
+  'Resolve nhanh từ Alarm Center.': 'Quick resolve from Alarm Center.',
+  'Bỏ qua sau khi xác minh.': 'Ignore after verification.',
+  'Dedupe cảnh báo, gắn ticket xử lý, SLA và push policy để không spam notification.': 'Dedupe alerts, attach handling tickets, SLA and push policy to avoid notification spam.',
+  'Ticket mở': 'Open tickets',
+  'Không có cảnh báo phù hợp': 'No matching alerts',
+  'Đổi filter hoặc tạo thao tác failed/offline/pin yếu để sinh alert qua dedupe.': 'Change filters or create failed/offline/low-battery actions to generate deduped alerts.',
+  'Thông tin truy vết': 'Trace information',
+  'Ghi chú xử lý': 'Handling note',
+  'Ticket xử lý': 'Handling ticket',
+  'Đang tải NotificationPolicy mock...': 'Loading mock NotificationPolicy...',
+  'Dùng cooldown và dedupe để không spam notification khi cùng một khóa phát nhiều event.': 'Use cooldown and dedupe to avoid notification spam when the same lock emits many events.',
+  'Quy tắc chính': 'Main rules',
+  'Mute theo loại cảnh báo': 'Mute by alert type',
+  'Nút đỏ nghĩa là loại cảnh báo đang bị mute.': 'A red button means that alert type is muted.',
+  'Đã lưu NotificationPolicy mock.': 'Saved mock NotificationPolicy.',
+  'Ticket sự cố': 'Incident ticket',
+  'SLA / hạn xử lý': 'SLA / due time',
+  'UI-02 · khôi phục tài khoản': 'UI-02 · account recovery',
+  'Email / Số điện thoại': 'Email / phone number',
+  'Gửi mã OTP': 'Send OTP code',
+  'Nhận mã xác minh': 'Get verification code',
+  'Nhập email hoặc số điện thoại đã đăng ký. OTP mock mặc định là 123456.': 'Enter the registered email or phone number. The default mock OTP is 123456.',
+  'Đăng nhập bằng sinh trắc học': 'Log in with biometrics',
+  'Hệ thống quản lý khóa cửa thông minh cho nhà ở, căn hộ và vận hành lưu trú.': 'Smart door-lock management system for homes, apartments and hospitality operations.',
+  'Xác minh đăng ký': 'Verify registration',
+  'Xác minh khôi phục': 'Verify recovery',
+  'Hoàn tất tạo tài khoản': 'Complete account creation',
+  'Tiếp tục đặt lại mật khẩu': 'Continue password reset',
+  'Mã OTP': 'OTP code',
+  'Xác minh & tạo tài khoản': 'Verify & create account',
+  'Xác minh & đặt lại mật khẩu': 'Verify & reset password',
+  'Gửi lại OTP mock': 'Resend mock OTP',
+  'Nhập mã OTP': 'Enter OTP code',
+  'UI-01 · xác minh OTP mock': 'UI-01 · mock OTP verification',
+  'Họ tên': 'Full name',
+  'Ví dụ: Nguyễn Văn A': 'Example: Nguyen Van A',
+  'Số điện thoại dự phòng': 'Backup phone number',
+  'Tuỳ chọn nếu đăng ký bằng email': 'Optional if registering by email',
+  'Ít nhất 6 ký tự': 'At least 6 characters',
+  'Nhập lại mật khẩu': 'Re-enter password',
+  'Xác nhận mật khẩu': 'Confirm password',
+  'Gửi OTP đăng ký': 'Send registration OTP',
+  'Tôi đã có tài khoản': 'I already have an account',
+  'Đăng ký Aplus': 'Register Aplus',
+  'Tạo tài khoản mock, xác minh bằng OTP 123456 rồi vào Home.': 'Create a mock account, verify with OTP 123456, then enter Home.',
+  'Đặt lại mật khẩu': 'Reset password',
+  'Xác nhận mật khẩu mới': 'Confirm new password',
+  'Lưu mật khẩu mới': 'Save new password',
+  'Đặt lại thành công': 'Reset successful',
+  'Mật khẩu đã được cập nhật. Hãy đăng nhập lại bằng mật khẩu mới.': 'Password updated. Please log in again with the new password.',
+  'Về đăng nhập': 'Back to login',
+  'Ở lại': 'Stay here',
+  'Tạo mật khẩu mới': 'Create new password',
+  'Aplus Pro đang dùng trên thiết bị khác': 'Aplus Pro is active on another device',
+  'Gói Aplus Pro của bạn hiện đã được kích hoạt trên một thiết bị khác. Để bảo vệ tài khoản, mỗi gói chỉ sử dụng trên một thiết bị tại một thời điểm.': 'Your Aplus Pro plan is currently active on another device. To protect your account, each plan can only be used on one device at a time.',
+  'Thiết bị hiện tại của gói:': 'Current plan device:',
+  'Chuyển sang thiết bị này': 'Switch to this device',
+  'Đóng': 'Close',
+  'Mở khóa toàn bộ tính năng nâng cao cho trận đấu chuyên nghiệp.': 'Unlock all advanced features for professional matches.',
+  'Dùng thử 15 ngày': 'Start 15-day trial',
+  'Đăng ký': 'Subscribe',
+  'Gói dùng thử và giá thật được lấy từ Google Play khi bạn cấu hình subscription trên Play Console.': 'Trial plans and real prices are loaded from Google Play when subscriptions are configured in Play Console.',
+  'OTP phải gồm 6 chữ số.': 'OTP must contain 6 digits.',
+  '• Batch 05/06/07/08/20/27 sẽ gọi cùng capability guard trước khi tạo credential.': '• Batch 05/06/07/08/20/27 will use the same capability guard before creating credentials.',
+  '• Flow không hỗ trợ sẽ bị khóa ở UI, không chỉ hiện toast.': '• Unsupported flows are locked in the UI, not just shown as a toast.',
+  '• Thu hồi credential chuyển Revoked/PendingRevoke để giữ audit, không xoá cứng.': '• Revoking a credential changes it to Revoked/PendingRevoke to keep audit history, not hard-delete it.',
+  'UI-16 làm trung tâm cấp quyền. Mọi loại quyền dùng chung Credential model, kiểm tra permission/capability trước khi đi vào flow con.': 'UI-16 is the access hub. All access types share the Credential model and check permission/capability before opening child flows.',
+  'Chưa chọn khóa cố định, credential sẽ dùng phạm vi sau.': 'No fixed lock selected; the credential will use a later scope.',
+  'Chọn sau trong flow con': 'Choose later in the child flow',
+  'Tạo draft & tiếp tục': 'Create draft & continue',
+  'Người nhận không còn active, không thể cấp quyền mới.': 'The recipient is no longer active, so new access cannot be granted.',
+  'Mã lỗi & khuyến nghị': 'Error codes & recommendations',
+  'Bao gồm device info, recent commands, alert codes, OTA log và app version. Không chứa password, mã PIN thô, biometric template hoặc dữ liệu nhạy cảm.': 'Includes device info, recent commands, alert codes, OTA logs and app version. Does not contain passwords, raw PINs, biometric templates or sensitive data.',
+  'Chưa có khóa để cấu hình.': 'No lock available to configure.',
+  'Tắt Remote Unlock ở đây sẽ chặn UI-30/37 ngay trong Batch 03 vì dùng chung `settings.remoteUnlockEnabled`.': 'Disabling Remote Unlock here blocks UI-30/37 immediately in Batch 03 because they share `settings.remoteUnlockEnabled`.',
+  'Thiết lập vận hành': 'Operational settings',
+  'Remote unlock đang bị guard chặn': 'Remote unlock is blocked by guard',
+  'Chưa có khóa để OTA.': 'No lock available for OTA.',
+  'Gói cập nhật': 'Update package',
+  'OTA chỉ chạy khi online, gateway online và capability `supportsOta=true`. Nếu fail, version cũ được giữ nguyên.': 'OTA only runs when the lock is online, gateway is online and `supportsOta=true`. If it fails, the old version is kept.',
+  'Thông tin thiết bị': 'Device information',
+  'Đang sync': 'Syncing',
+  'Cửa đóng': 'Door closed',
+  'Cửa mở': 'Door open',
+  'Không có khóa trong bộ lọc này': 'No locks in this filter',
+  'Bạn có thể chuyển bộ lọc khác hoặc thêm khóa demo để kiểm tra luồng Home → Detail.': 'You can change filters or add a demo lock to test the Home → Detail flow.',
+  'Nhà / cơ sở': 'Home / site',
+  'Dữ liệu native mock theo home/building/room/lock': 'Native mock data by home/building/room/lock',
+  'Bấm khóa nào vào đúng Lock Detail của khóa đó': 'Tap a lock to open its correct Lock Detail screen',
+  'Không tìm thấy command': 'Command not found',
+  'Về khóa': 'Back to lock',
+  'Không đổi trạng thái': 'State unchanged',
+  'Đang xử lý': 'Processing',
+  'Thử lại': 'Try again',
+  'Kết quả audit': 'Audit result',
+  'Record sẽ xuất hiện khi command kết thúc Success/Timeout/Failed.': 'A record appears when the command ends as Success/Timeout/Failed.',
+  'Online cục bộ': 'Local online',
+  'Đang khóa': 'Locked',
+  'Đang mở': 'Unlocked',
+  'Thêm quyền': 'Add access',
+  'Đã đồng bộ': 'Synced',
+  'Chưa có': 'None',
+  'Tín hiệu': 'Signal',
+  'Mở quá lâu': 'Open too long',
+  'Mã PIN': 'PIN code',
+  'Điều khiển vật lý': 'Physical control',
+  'Ủy quyền phone': 'Phone authorization',
+  'UI-11/51 gán khóa': 'UI-11/51 lock assignment',
+  'Remote unlock đang bị chặn': 'Remote unlock is blocked',
+  'Mở màn Remote Unlock để xem checklist quyền, setting, gateway và trạng thái online.': 'Open Remote Unlock to view the checklist for permissions, settings, gateway and online status.',
+  'Tác vụ nhanh': 'Quick actions',
+  'Command & audit gần nhất': 'Latest command & audit',
+  'Command và mật khẩu mock sẽ ghi vào Records để kiểm thử audit.': 'Commands and mock passwords are written to Records for audit testing.',
+  'Thiết bị trả success event': 'Device returns success event',
+  'Gateway trả lỗi mock': 'Gateway returns mock error',
+  'Khóa lại qua Gateway': 'Lock via Gateway',
+  'Remote unlock chưa đạt checklist an toàn. Vui lòng kiểm tra quyền, gateway và setting.': 'Remote unlock has not passed the safety checklist. Please check permissions, gateway and settings.',
+  'Không tạo được command. Kiểm tra trạng thái online/quyền điều khiển.': 'Could not create command. Check online status/control permission.',
+  'Xác thực remote unlock Aplus': 'Authenticate Aplus remote unlock',
+  'Sinh trắc học mock thất bại.': 'Mock biometrics failed.',
+  'UI-37 xác thực': 'UI-37 authentication',
+  'Nhập PIN để mở từ xa': 'Enter PIN for remote unlock',
+  'Dùng PIN': 'Use PIN',
+  'Gửi lệnh khóa lại': 'Send lock command',
+  'Command chỉ đổi trạng thái khi nhận success event, timeout/failed giữ nguyên trạng thái khóa.': 'Command state changes only after a success event; timeout/failed keeps the lock state unchanged.',
+  'Checklist an toàn': 'Safety checklist',
+  'Xác thực lại': 'Re-authenticate',
+  'Lệnh khóa lại vẫn đi qua command lifecycle để tạo audit record rõ ràng.': 'Lock commands still go through the command lifecycle to create a clear audit record.',
+  'Kịch bản test command': 'Command test scenarios',
+  'Dùng để kiểm thử đúng yêu cầu: success tạo record, timeout không đổi trạng thái, failed không đổi trạng thái.': 'Use this to test the required behavior: success creates a record, timeout does not change state, failed does not change state.',
+  'Vận hành': 'Operations',
+  'Gom các chức năng vận hành phụ; tài khoản đã tách sang tab Tôi.': 'Groups secondary operational features; account has been separated into the Me tab.',
+  'Chọn phương thức': 'Choose method',
+  'QR / mã thiết bị': 'QR / device code',
+  'Hoàn tất': 'Finish',
+  'Quét QR': 'Scan QR',
+  'Đọc serial/model/capability từ tem khóa.': 'Read serial/model/capability from the lock label.',
+  'Mã thiết bị': 'Device code',
+  'Nhập serial thủ công để test duplicate/timeout.': 'Enter serial manually to test duplicate/timeout.',
+  'Dò khóa BLE gần điện thoại rồi bind.': 'Scan nearby BLE locks from the phone, then bind.',
+  'Kết nối Wi‑Fi 2.4/5GHz trước khi provision.': 'Connect to Wi‑Fi 2.4/5GHz before provisioning.',
+  'Đã bind': 'Bound',
+  'Phòng pairing': 'Pairing room',
+  'Cần chạy preflight và cấp đủ quyền trước khi scan thiết bị.': 'Run preflight and grant all permissions before scanning devices.',
+  'QR đọc được thiết bị đã bind trong hệ thống.': 'QR detected a device already bound in the system.',
+  'Đã đọc QR và lấy được serial/model/capability.': 'QR read successfully and returned serial/model/capability.',
+  'Serial/mã thiết bị không được để trống.': 'Serial/device code cannot be empty.',
+  'Giả lập timeout khi xác thực mã thiết bị. Không tạo khóa rác.': 'Simulated timeout while verifying device code. No junk lock is created.',
+  'Serial đã tồn tại hoặc thiết bị đã bind.': 'Serial already exists or the device is already bound.',
+  'Đã nhận mã thiết bị thủ công. Có thể tiếp tục BLE/Wi‑Fi/Gateway.': 'Manual device code received. You can continue with BLE/Wi‑Fi/Gateway.',
+  'Cần chọn thiết bị hợp lệ, chưa bind, trước khi sang Bluetooth.': 'Select a valid unbound device before continuing to Bluetooth.',
+  'Đã tìm thấy thiết bị Bluetooth nearby. Chọn thiết bị để connect mock.': 'Nearby Bluetooth devices found. Select a device to mock-connect.',
+  'Thiết bị BLE này đã bind, không thể thêm trùng.': 'This BLE device is already bound and cannot be added again.',
+  'Không connect được thiết bị BLE mock.': 'Could not mock-connect the BLE device.',
+  'Chưa có thiết bị hợp lệ để cấu hình Wi‑Fi.': 'No valid device is available for Wi‑Fi configuration.',
+  'Đã scan Wi‑Fi. Chọn SSID và nhập mật khẩu để provision.': 'Wi‑Fi scan completed. Select SSID and enter password to provision.',
+  'Chưa chọn thiết bị để provision Wi‑Fi.': 'No device selected for Wi‑Fi provisioning.',
+  'Wi‑Fi sai hoặc mật khẩu quá ngắn. Thiết bị chưa được tạo vào Home.': 'Wrong Wi‑Fi or password too short. The device was not created in Home.',
+  'Chưa có thiết bị để bind gateway.': 'No device available to bind gateway.',
+  'Thiếu thiết bị hoặc nhà/cơ sở để hoàn tất pairing.': 'Missing device or home/site to complete pairing.',
+  'Thiết bị đã bind, không tạo khóa trùng.': 'Device already bound; duplicate lock is not created.',
+  'Gateway đang offline, không thể bind MQTT/WebSocket.': 'Gateway is offline and cannot bind MQTT/WebSocket.',
+  'Giả lập thiếu quyền': 'Simulate missing permission',
+  'Đã sẵn sàng.': 'Ready.',
+  'Chạy preflight': 'Run preflight',
+  'UI-32 · Quét QR / mã thiết bị': 'UI-32 · scan QR / device code',
+  'Mở scanner QR mock': 'Open mock QR scanner',
+  'Serial / mã thiết bị': 'Serial / device code',
+  'Dùng mã này': 'Use this code',
+  'Serial trùng': 'Duplicate serial',
+  'Giả lập timeout': 'Simulate timeout',
+  'Thiết bị đã bind, không thể tiếp tục.': 'Device already bound; cannot continue.',
+  'Tiếp Bluetooth': 'Next: Bluetooth',
+  'Tiếp Wi‑Fi': 'Next: Wi‑Fi',
+  'Tiếp Gateway': 'Next: Gateway',
+  'Tên khóa': 'Lock name',
+  'Mã phòng': 'Room code',
+  'Hoàn tất thêm khóa': 'Finish adding lock',
+  'UI-36 · Hoàn tất thêm khóa': 'UI-36 · finish adding lock',
+  'Pairing thành công': 'Pairing successful',
+  'Pairing chưa hoàn tất': 'Pairing not complete',
+  'Khóa mới đã được tạo bằng repository/state chung, xuất hiện ở Home, có lockId thật và có audit record System.': 'The new lock was created through the shared repository/state, appears in Home, has a real lockId and a System audit record.',
+  'Kiểm tra lại các bước scan, Wi‑Fi và Gateway/MQTT.': 'Check the scan, Wi‑Fi and Gateway/MQTT steps again.',
+  'Mở chi tiết': 'Open detail',
+  'Pairing khóa khác': 'Pair another lock',
+
+  'Vào Settings > Location và cho phép Aplus Lock dùng vị trí khi pairing BLE.': 'Go to Settings > Location and allow Aplus Lock to use location while pairing BLE.',
+  'Preflight OK: Bluetooth, Location, Wi‑Fi, Nearby devices và Notification đã sẵn sàng.': 'Preflight OK: Bluetooth, Location, Wi‑Fi, Nearby devices and Notifications are ready.',
+  'Batch 12 · UI-12, UI-31 đến UI-36': 'Batch 12 · UI-12, UI-31 to UI-36',
+  'Chọn phương thức thêm khóa': 'Choose add-lock method',
+  'Wizard gộp QR, mã thiết bị, Bluetooth, Wi‑Fi và Gateway/MQTT vào một flow để không còn 3 luồng rời rạc.': 'The wizard combines QR, device code, Bluetooth, Wi‑Fi and Gateway/MQTT into one flow so there are no separate flows.',
+  'Preflight quyền thiết bị': 'Device permission preflight',
+  'Bluetooth, Location, Wi‑Fi, Nearby devices và Notification phải pass trước khi scan.': 'Bluetooth, Location, Wi‑Fi, Nearby devices and Notifications must pass before scanning.',
+  'Lấy serial, model và capability': 'Read serial, model and capability',
+  'Hoặc nhập mã thiết bị thủ công để kiểm tra duplicate, device đã bind và timeout.': 'Or enter the device code manually to test duplicate, already-bound device and timeout cases.',
+  'Tìm và connect thiết bị BLE gần điện thoại': 'Find and connect a BLE device near the phone',
+  'Provision Wi‑Fi xuống khóa': 'Provision Wi‑Fi to the lock',
+  'Wi‑Fi sai sẽ fail và không tạo khóa rác vào Home. Có thể bỏ qua nếu chỉ muốn BLE-only mock.': 'Wrong Wi‑Fi fails and does not create junk locks in Home. You can skip this for BLE-only mock.',
+  'Gateway offline bị khóa để command/realtime không sinh trạng thái sai.': 'Offline gateway is blocked so command/realtime cannot create incorrect state.',
+  'UI-26 · Policy 6-10 số': 'UI-26 · 6-10 digit policy',
+  'Giờ bắt đầu': 'Start time',
+  'Giờ kết thúc': 'End time',
+  'Ghi chú lịch': 'Schedule note',
+  'Ví dụ: ca sáng / lịch lớp': 'Example: morning shift / class schedule',
+  'Tạo mật khẩu': 'Create password',
+  'Tạo mã mới': 'Create new code',
+  'Chọn khóa, người nhận, loại mã, thời hạn và kiểm tra trùng mã trong cùng khóa.': 'Choose lock, recipient, code type and validity, then check duplicate codes in the same lock.',
+  'Loại mật khẩu': 'Password type',
+  'Thông tin mã': 'Code information',
+  'Người nhận quyền': 'Access recipient',
+  'Người nhận này đã hết hiệu lực, không thể cấp mật khẩu mới.': 'This recipient is no longer valid, so a new password cannot be granted.',
+  'Lịch chu kỳ': 'Recurring schedule',
+  'Đã tạm dừng mật khẩu mock.': 'Mock password paused.',
+  'Đã bật lại mật khẩu mock.': 'Mock password resumed.',
+  'Đã gia hạn thêm 7 ngày.': 'Extended by 7 days.',
+  'Offline: mật khẩu chuyển PendingRevoke, chờ đồng bộ.': 'Offline: password switches to PendingRevoke and waits for sync.',
+  'Đã thu hồi mật khẩu.': 'Password revoked.',
+  'Mock dùng mã thành công, AccessRecord đã được tạo.': 'Mock code used successfully; AccessRecord was created.',
+  'Mock dùng mã thất bại, AccessRecord failed đã được tạo.': 'Mock code use failed; a failed AccessRecord was created.',
+  'Thao tác thất bại.': 'Action failed.',
+  'Đang tải mật khẩu...': 'Loading passwords...',
+  'Hiệu lực từ': 'Valid from',
+  'Hiệu lực đến': 'Valid until',
+  'Số lần dùng': 'Usage count',
+  'Lần dùng cuối': 'Last used',
+  'Mock dùng mã': 'Mock use code',
+  'Gia hạn +7 ngày': 'Extend +7 days',
+  'Bật lại': 'Resume',
+  'Sửa lịch chu kỳ': 'Edit recurring schedule',
+  'Bạn đang offline. Mật khẩu sẽ chuyển PendingRevoke để đồng bộ sau.': 'You are offline. The password will switch to PendingRevoke and sync later.',
+  'Mật khẩu sẽ chuyển Revoked, không xoá cứng để giữ audit.': 'The password will switch to Revoked and will not be hard-deleted, preserving audit history.',
+  'Mã PIN mock': 'Mock PIN code',
+  'Policy: 6-10 chữ số, kiểm tra trùng trong cùng khóa khi tạo.': 'Policy: 6-10 digits, check duplicates in the same lock when creating.',
+  'Thông tin vận hành': 'Operational information',
+  'Toàn bộ khóa · UI-03': 'All locks · UI-03',
+  'Policy 6-10 số': '6-10 digit policy',
+  'Offline: tạo PendingSync': 'Offline: create PendingSync',
+  'Hiệu lực': 'Validity',
+  'Tạo mã thường, mã tạm, mã một lần, mã chu kỳ; quản lý đồng bộ, gia hạn và thu hồi.': 'Create normal, temporary, one-time and recurring codes; manage sync, extension and revoke.',
+  'Đang tải danh sách mật khẩu...': 'Loading password list...',
+  'Không có mật khẩu phù hợp': 'No matching passwords',
+  'Bấm thêm mật khẩu để tạo mã mới cho khóa/phòng.': 'Tap Add password to create a new code for a lock/room.',
+  'Cần chọn ít nhất một ngày trong tuần.': 'Select at least one day of the week.',
+  'Giờ bắt đầu phải trước giờ kết thúc.': 'Start time must be before end time.',
+  'Đã cấu hình lịch mock. Khi quay lại màn thêm mật khẩu, chọn loại Mã chu kỳ để dùng lịch này.': 'Mock schedule configured. When returning to Add password, choose Recurring code to use this schedule.',
+  'Lập lịch mã chu kỳ': 'Schedule recurring code',
+
+};
+
+const exactEn: Dictionary = {...en, ...extraEn, ...cleanupEn};
 
 const extraVi: Dictionary = {
   'Home': 'Nhà',
@@ -679,9 +1035,125 @@ const extraVi: Dictionary = {
   'Soft revoke': 'Soft revoke',
 };
 
+
+
+const cleanupVi: Dictionary = {
+  'Aplus User': 'Người dùng Aplus',
+  'Admin Aplus': 'Quản trị Aplus',
+  'Aplus Admin': 'Quản trị Aplus',
+  'Aplus black logo': 'Logo Aplus nền đen',
+  'Black logo': 'Logo đen',
+  'Smart Lock Control': 'Điều khiển khóa thông minh',
+  'App Remote Unlock': 'Mở khóa từ xa bằng app',
+  'App PIN security': 'Bảo mật App PIN',
+  'Accept mock': 'Chấp nhận mock',
+  'Add key': 'Thêm quyền mở khóa',
+  'Alert active': 'Cảnh báo đang hoạt động',
+  'Alerts active': 'Cảnh báo đang hoạt động',
+  'Alarm Center': 'Trung tâm báo động',
+  'Battery critical': 'Pin rất thấp',
+  'Battery low': 'Pin yếu',
+  'Battery monitor': 'Giám sát pin',
+  'Bluetooth nearby': 'Bluetooth gần đây',
+  'Bluetooth Pairing': 'Ghép nối Bluetooth',
+  'Bluetooth only': 'Chỉ Bluetooth',
+  'BLE only': 'Chỉ BLE',
+  'Booking active': 'Đang có đặt phòng',
+  'Breakdown theo method': 'Phân tích theo phương thức',
+  'CSV mock thay cho Excel': 'CSV mock thay cho Excel',
+  'Camera/face unlock': 'Camera/mở khóa khuôn mặt',
+  'Capability Matrix': 'Ma trận tương thích',
+  'Capability checked': 'Đã kiểm tra tương thích',
+  'Capability matrix theo model': 'Ma trận tương thích theo model',
+  'Command lifecycle': 'Vòng đời lệnh',
+  'Credential Hub': 'Trung tâm quyền mở khóa',
+  'Credential active': 'Quyền đang hoạt động',
+  'Credential active/revoked': 'Quyền đang hoạt động/đã thu hồi',
+  'Credential expired': 'Quyền đã hết hạn',
+  'Cycle Schedule': 'Lịch mã chu kỳ',
+  'Dedupe key': 'Khóa chống trùng',
+  'Device Settings': 'Cài đặt thiết bị',
+  'Diagnostic package mock': 'Gói diagnostic mock',
+  'Door left open longer than threshold': 'Cửa mở lâu hơn ngưỡng',
+  'Door sensor': 'Cảm biến cửa',
+  'Draft credential': 'Bản nháp quyền mở khóa',
+  'Drilldown nhanh': 'Drilldown nhanh',
+  'Drilldown sang Records / Alerts / Battery.': 'Drilldown sang Lịch sử / Cảnh báo / Pin.',
+  'Failed attempts': 'Số lần mở thất bại',
+  'Failed/Blocked': 'Thất bại/Bị chặn',
+  'Firmware OTA': 'Firmware OTA',
+  'Gateway / MQTT': 'Gateway / MQTT',
+  'Gateway heartbeat timeout': 'Gateway mất heartbeat',
+  'Gateway offline': 'Gateway offline',
+  'Gateway online': 'Gateway online',
+  'Gateway/MQTT': 'Gateway/MQTT',
+  'Hardware OK': 'Phần cứng OK',
+  'Import Excel/CSV': 'Import Excel/CSV',
+  'Invite QR/link': 'Mời bằng QR/link',
+  'Language & Branding': 'Ngôn ngữ & Branding',
+  'Last seen': 'Lần cuối online',
+  'Lock command': 'Lệnh khóa',
+  'Lock detail': 'Chi tiết khóa',
+  'Member/Tenant detail': 'Chi tiết thành viên/khách thuê',
+  'MethodBreakdown': 'Thống kê phương thức',
+  'More Hub': 'Trung tâm thêm',
+  'NFC / mobile card': 'NFC / thẻ điện thoại',
+  'NFC Key': 'Chìa khóa NFC',
+  'Nearby devices': 'Thiết bị gần đây',
+  'No add key': 'Không có quyền thêm khóa',
+  'No remote': 'Không có quyền remote',
+  'No settings': 'Không có quyền cài đặt',
+  'No staff': 'Không có quyền nhân sự',
+  'No unlock': 'Không có quyền mở khóa',
+  'Notification rules': 'Quy tắc thông báo',
+  'Offline Sync Queue': 'Hàng đợi đồng bộ offline',
+  'Online mock': 'Online mock',
+  'Offline mock': 'Offline mock',
+  'Open network': 'Mạng mở',
+  'OTA guard passed': 'Guard OTA đạt yêu cầu',
+  'OTA is blocked by guard': 'OTA đang bị guard chặn',
+  'OTA unsupported': 'Không hỗ trợ OTA',
+  'Pairing Wizard': 'Pairing Wizard',
+  'Permission OK': 'Quyền OK',
+  'Phone authorization': 'Ủy quyền điện thoại',
+  'Push policy': 'Chính sách push',
+  'QR Scan': 'Quét QR',
+  'Re-auth': 'Xác thực lại',
+  'Record detail': 'Chi tiết bản ghi',
+  'Role matrix': 'Ma trận phân quyền',
+  'Room Management': 'Quản lý phòng',
+  'Room No': 'Số phòng',
+  'Schedule mock': 'Lịch mock',
+  'Soft revoke': 'Thu hồi mềm',
+  'Staff mgmt': 'Quản lý nhân sự',
+  'Sub admin': 'Quản trị phụ',
+  'Trusted devices': 'Thiết bị tin cậy',
+  'Unknown network': 'Mạng không xác định',
+  'Up to date': 'Đã mới nhất',
+  'Wi‑Fi Provisioning': 'Cấu hình Wi‑Fi',
+  'Wi‑Fi setup': 'Cấu hình Wi‑Fi',
+  'Xem UI-46': 'Xem UI-46',
+  'Xem UI-69': 'Xem UI-69',
+  '0 unread': '0 chưa đọc',
+  'Bấm English hoặc Tiếng Việt để đổi ngôn ngữ toàn app ngay lập tức: tabbar, header, button, label, placeholder và các status chip dùng chung.': 'Bấm English hoặc Tiếng Việt để đổi ngôn ngữ toàn app ngay lập tức: tabbar, header, button, label, placeholder và các chip trạng thái dùng chung.',
+  'Remote unlock, transfer, revoke, emergency card và API key.': 'Mở khóa từ xa, chuyển quyền, thu hồi, thẻ khẩn cấp và API key.',
+  'Dùng để xác thực remote unlock, transfer, revoke, factory reset và các flow nhạy cảm.': 'Dùng để xác thực mở khóa từ xa, chuyển quyền, thu hồi, factory reset và các flow nhạy cảm.',
+  'Đã lưu branding mock cho dự án.': 'Đã lưu branding mock cho dự án.',
+  'Ngôn ngữ & Branding': 'Ngôn ngữ & Branding',
+  'Lưu branding': 'Lưu branding',
+  'Không hardcode string: chuẩn bị tài nguyên Việt/Anh và branding theo dự án.': 'Không hardcode string: chuẩn bị tài nguyên Việt/Anh và branding theo dự án.',
+  'Branding dự án': 'Branding dự án',
+  'Ngôn ngữ & branding': 'Ngôn ngữ & branding',
+  'Tài khoản, ngôn ngữ, bảo mật và branding': 'Tài khoản, ngôn ngữ, bảo mật và branding',
+  'Lệnh khóa lại vẫn đi qua command lifecycle để tạo audit record rõ ràng.': 'Lệnh khóa lại vẫn đi qua vòng đời lệnh để tạo audit record rõ ràng.',
+  'Premium Match Toolkit': 'Bộ công cụ trận đấu Premium',
+
+};
+
 const exactVi: Dictionary = {
   ...Object.fromEntries(Object.entries(exactEn).map(([viText, enText]) => [enText, viText])),
   ...extraVi,
+  ...cleanupVi,
 };
 
 const extraPhraseEn: Dictionary = {
@@ -707,7 +1179,6 @@ const extraPhraseEn: Dictionary = {
   'tất cả khóa': 'all locks',
   'bộ lọc': 'filter',
   'lọc': 'filter',
-  'pin': 'battery',
   'cửa': 'door',
   'mở lâu': 'left open',
   'cạy phá': 'tamper',
@@ -730,6 +1201,86 @@ const extraPhraseEn: Dictionary = {
   'thay đổi': 'change',
   'mới': 'new',
   'cũ': 'old',
+  'vui lòng': 'please',
+  'nhập': 'enter',
+  'email hoặc số điện thoại': 'email or phone number',
+  'số điện thoại': 'phone number',
+  'không hợp lệ': 'is invalid',
+  'hợp lệ': 'valid',
+  'phải có ít nhất': 'must have at least',
+  'ít nhất': 'at least',
+  'chữ số': 'digits',
+  'ký tự': 'characters',
+  'họ tên': 'full name',
+  'xác nhận': 'confirmation',
+  'chưa khớp': 'does not match',
+  'mã OTP': 'OTP code',
+  'gồm': 'contains',
+  'chọn': 'select',
+  'người nhận': 'recipient',
+  'ma trận': 'matrix',
+  'gọi cùng': 'uses the same',
+  'trước khi': 'before',
+  'không chỉ': 'not only',
+  'hiện toast': 'showing a toast',
+  'thu hồi': 'revoke',
+  'giữ': 'keep',
+  'không xoá cứng': 'not hard-delete',
+  'không xóa cứng': 'not hard-delete',
+  'trung tâm cấp quyền': 'access hub',
+  'mọi loại quyền': 'all access types',
+  'dùng chung': 'share',
+  'kiểm tra': 'check',
+  'trước khi đi vào': 'before opening',
+  'flow con': 'child flow',
+  'chưa chọn': 'not selected',
+  'cố định': 'fixed',
+  'dùng phạm vi sau': 'use scope later',
+  'tạo draft': 'create draft',
+  'tiếp tục': 'continue',
+  'không còn': 'no longer',
+  'không thể': 'cannot',
+  'quyền mới': 'new access',
+  'mã lỗi': 'error code',
+  'khuyến nghị': 'recommendations',
+  'bao gồm': 'includes',
+  'không chứa': 'does not contain',
+  'dữ liệu nhạy cảm': 'sensitive data',
+  'thông tin thiết bị': 'device information',
+  'thiết lập vận hành': 'operational settings',
+  'gói cập nhật': 'update package',
+  'bản mới nhất': 'latest version',
+  'cửa đóng': 'door closed',
+  'cửa mở': 'door open',
+  'không rõ': 'unknown',
+  'tải lại': 'reload',
+  'bộ lọc': 'filter',
+  'bấm': 'tap',
+  'đúng': 'correct',
+  'của khóa đó': 'of that lock',
+  'không tìm thấy': 'not found',
+  'về khóa': 'back to lock',
+  'không đổi': 'does not change',
+  'trạng thái': 'status',
+  'đang xử lý': 'processing',
+  'thử lại': 'try again',
+  'kết quả': 'result',
+  'xuất hiện': 'appears',
+  'khi': 'when',
+  'kết thúc': 'ends',
+  'online cục bộ': 'local online',
+  'đang khóa': 'locked',
+  'đang mở': 'unlocked',
+  'thêm quyền': 'add access',
+  'đã đồng bộ': 'synced',
+  'chưa có': 'none',
+  'tín hiệu': 'signal',
+  'mở quá lâu': 'open too long',
+  'điều khiển vật lý': 'physical control',
+  'ủy quyền phone': 'phone authorization',
+  'đang bị chặn': 'is blocked',
+  'mở màn': 'open screen',
+  'để xem': 'to view',
 };
 
 const phraseEnAll: Dictionary = {...phraseEn, ...extraPhraseEn};
@@ -842,22 +1393,127 @@ const phraseVi: Dictionary = {
   'mock': 'mock',
 };
 
+
+const extraPhraseVi: Dictionary = {
+  'App PIN security': 'Bảo mật App PIN',
+  'Language & branding': 'Ngôn ngữ & Branding',
+  'Project branding': 'Branding dự án',
+  'Trusted devices': 'Thiết bị tin cậy',
+  'Sensitive actions': 'Thao tác nhạy cảm',
+  'Remote unlock': 'Mở khóa từ xa',
+  'Phone authorization': 'Ủy quyền điện thoại',
+  'Card management': 'Quản lý thẻ',
+  'Physical remote': 'Remote vật lý',
+  'Model compatibility': 'Tương thích model',
+  'Add password': 'Thêm mật khẩu',
+  'Password manager': 'Quản lý mật khẩu',
+  'Password detail': 'Chi tiết mật khẩu',
+  'Battery & power': 'Pin & điện năng',
+  'Alarm Center': 'Trung tâm báo động',
+  'Incident detail': 'Chi tiết sự cố',
+  'Create incident ticket': 'Tạo ticket xử lý',
+  'Notification settings': 'Cấu hình thông báo',
+  'Notification rules': 'Quy tắc thông báo',
+  'Data reports': 'Báo cáo dữ liệu',
+  'Advanced report filters': 'Bộ lọc báo cáo nâng cao',
+  'Lock drilldown report': 'Báo cáo drilldown theo khóa',
+  'Lock health diagnostic': 'Diagnostic sức khỏe khóa',
+  'Hardware detail': 'Chi tiết phần cứng',
+  'Health diagnostic': 'Diagnostic sức khỏe',
+  'Technical support': 'Hỗ trợ kỹ thuật',
+  'Technical support / warranty': 'Hỗ trợ kỹ thuật / bảo hành',
+  'Hotel / apartment': 'Khách sạn / căn hộ',
+  'Normally open': 'Mở thường xuyên',
+  'Class schedule': 'Lịch lớp',
+  'Open records': 'Mở lịch sử',
+  'Save note': 'Lưu ghi chú',
+  'Current PIN': 'PIN hiện tại',
+  'New PIN': 'PIN mới',
+  'Re-enter': 'Nhập lại',
+  'Auto-lock': 'Tự khóa',
+  'wrong attempts': 'lần sai',
+  'Loading': 'Đang tải',
+  'Not selected': 'Chưa chọn',
+  'Not enabled': 'Chưa bật',
+  'Can grant': 'Có thể cấp',
+  'Missing permission': 'Thiếu quyền',
+  'No hardcode': 'Không hardcode',
+  'Whole system': 'Toàn hệ thống',
+  'Choose': 'Chọn',
+  'Select': 'Chọn',
+  'Search': 'Tìm kiếm',
+  'Reload': 'Tải lại',
+  'Save': 'Lưu',
+  'Cancel': 'Huỷ',
+  'Confirm': 'Xác nhận',
+  'Create': 'Tạo',
+  'Edit': 'Sửa',
+  'Delete': 'Xoá',
+};
+
+const phraseViAll: Dictionary = {...phraseVi, ...extraPhraseVi};
+
+const phraseEnEntries = Object.entries(phraseEnAll).sort((a, b) => b[0].length - a[0].length);
+const phraseViEntries = Object.entries(phraseViAll).sort((a, b) => b[0].length - a[0].length);
+const translationCache = new Map<string, string>();
+const TRANSLATION_CACHE_LIMIT = 1200;
+
+function rememberTranslation(key: string, value: string) {
+  if (translationCache.size > TRANSLATION_CACHE_LIMIT) {
+    const firstKey = translationCache.keys().next().value;
+    if (firstKey) {
+      translationCache.delete(firstKey);
+    }
+  }
+  translationCache.set(key, value);
+  return value;
+}
+
+function keepCase(match: string, replacement: string) {
+  if (match === match.toUpperCase()) {
+    return replacement.toUpperCase();
+  }
+  if (match[0] === match[0]?.toUpperCase()) {
+    return replacement.charAt(0).toUpperCase() + replacement.slice(1);
+  }
+  return replacement;
+}
+
+function isWordChar(char: string | undefined) {
+  return Boolean(char && /[A-Za-zÀ-ỹĐđ0-9_]/.test(char));
+}
+
+const boundaryRegexCache = new Map<string, RegExp>();
+
+function buildBoundaryRegex(search: string) {
+  const cached = boundaryRegexCache.get(search);
+  if (cached) {
+    return cached;
+  }
+  const escaped = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const startsWithWord = isWordChar(search[0]);
+  const endsWithWord = isWordChar(search[search.length - 1]);
+  const pattern = `${startsWithWord ? '(^|[^A-Za-zÀ-ỹĐđ0-9_])' : ''}(${escaped})${endsWithWord ? '(?=$|[^A-Za-zÀ-ỹĐđ0-9_])' : ''}`;
+  const regex = new RegExp(pattern, 'gi');
+  boundaryRegexCache.set(search, regex);
+  return regex;
+}
+
 function replaceCaseInsensitive(input: string, search: string, replacement: string) {
-  return input.replace(new RegExp(search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), match => {
-    if (match === match.toUpperCase()) {
-      return replacement.toUpperCase();
-    }
-    if (match[0] === match[0]?.toUpperCase()) {
-      return replacement.charAt(0).toUpperCase() + replacement.slice(1);
-    }
-    return replacement;
+  const startsWithWord = isWordChar(search[0]);
+  return input.replace(buildBoundaryRegex(search), (...args) => {
+    const prefix = startsWithWord ? args[1] : '';
+    const match = startsWithWord ? args[2] : args[1];
+    return `${prefix}${keepCase(match, replacement)}`;
   });
 }
 
 function shouldSkipDynamicTranslation(value: string) {
   const trimmed = value.trim();
-  return trimmed.length > 260
+  return trimmed.length === 0
+    || trimmed.length > 260
     || /^https?:\/\//.test(trimmed)
+    || /^[A-Z][A-Za-z0-9]+(?:[A-Z][A-Za-z0-9]+)+$/.test(trimmed)
     || /^[A-Z0-9_:-]{5,}$/.test(trimmed)
     || /^[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}$/.test(trimmed)
     || /^APL[-A-Z0-9_:.]+$/.test(trimmed)
@@ -870,42 +1526,48 @@ function translateByExact(value: string, dictionary: Dictionary) {
   return exact ? (value.startsWith(' ') || value.endsWith(' ') ? value.replace(value.trim(), exact) : exact) : undefined;
 }
 
-function translateByPhrase(value: string, dictionary: Dictionary) {
+function translateByPhrase(value: string, entries: Array<[string, string]>) {
   let translated = value;
-  Object.keys(dictionary)
-    .sort((a, b) => b.length - a.length)
-    .forEach(phrase => {
-      translated = replaceCaseInsensitive(translated, phrase, dictionary[phrase]);
-    });
+  for (const [phrase, replacement] of entries) {
+    if (translated.toLowerCase().includes(phrase.toLowerCase())) {
+      translated = replaceCaseInsensitive(translated, phrase, replacement);
+    }
+  }
   return translated;
 }
 
 export function translateString(value: string, language: AppLanguageCode) {
+  const cacheKey = `${language}\u0000${value}`;
+  const cached = translationCache.get(cacheKey);
+  if (cached !== undefined) {
+    return cached;
+  }
+
   if (shouldSkipDynamicTranslation(value)) {
-    return value;
+    return rememberTranslation(cacheKey, value);
   }
 
   if (language === 'vi') {
     const exact = translateByExact(value, exactVi);
     if (exact) {
-      return exact;
+      return rememberTranslation(cacheKey, exact);
     }
     if (!/[A-Za-z]/.test(value)) {
-      return value;
+      return rememberTranslation(cacheKey, value);
     }
-    return translateByPhrase(value, phraseVi);
+    return rememberTranslation(cacheKey, translateByPhrase(value, phraseViEntries));
   }
 
   const exact = translateByExact(value, exactEn);
   if (exact) {
-    return exact;
+    return rememberTranslation(cacheKey, exact);
   }
 
   if (!/[À-ỹĐđ]/.test(value)) {
-    return value;
+    return rememberTranslation(cacheKey, value);
   }
 
-  return translateByPhrase(value, phraseEnAll);
+  return rememberTranslation(cacheKey, translateByPhrase(value, phraseEnEntries));
 }
 
 export function translateUnknown(value: unknown, language: AppLanguageCode) {

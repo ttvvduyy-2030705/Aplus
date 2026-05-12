@@ -1,4 +1,4 @@
-import React, {ReactNode} from 'react';
+import React, {ReactNode, memo, useCallback, useRef} from 'react';
 import {ActivityIndicator, Pressable, StyleProp, StyleSheet, ViewStyle} from 'react-native';
 import {theme} from '@/theme/theme';
 import {AplusText} from './AplusText';
@@ -28,7 +28,7 @@ function iconColor(variant: ButtonVariant, disabled?: boolean) {
   return theme.colors.text;
 }
 
-export function AplusButton({
+function AplusButtonComponent({
   title,
   onPress,
   variant = 'primary',
@@ -41,12 +41,21 @@ export function AplusButton({
 }: Props) {
   const isDisabled = disabled || loading;
   const currentIconColor = iconColor(variant, isDisabled);
+  const lastPressAtRef = useRef(0);
+  const handlePress = useCallback(() => {
+    const now = Date.now();
+    if (now - lastPressAtRef.current < 450) {
+      return;
+    }
+    lastPressAtRef.current = now;
+    onPress();
+  }, [onPress]);
 
   return (
     <Pressable
       accessibilityRole="button"
       disabled={isDisabled}
-      onPress={onPress}
+      onPress={handlePress}
       style={({pressed}) => [
         styles.base,
         styles[variant],
@@ -60,6 +69,8 @@ export function AplusButton({
     </Pressable>
   );
 }
+
+export const AplusButton = memo(AplusButtonComponent);
 
 const styles = StyleSheet.create({
   base: {

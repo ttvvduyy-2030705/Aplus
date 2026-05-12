@@ -13,7 +13,7 @@ import {useAppState} from '@/state/AppStateContext';
 import {theme} from '@/theme/theme';
 import type {AccessRecord, AccessRecordMethod, AccessRecordResult} from '@/types/lock';
 
-const methodFilters: Array<AccessRecordMethod | 'all'> = ['all', 'App Remote Unlock', 'PIN', 'Card', 'Fingerprint', 'Face', 'Gateway', 'Battery', 'System'];
+const methodFilters: Array<AccessRecordMethod | 'all'> = ['all', 'App Remote Unlock', 'PIN', 'Card', 'Fingerprint', 'Face', 'NFC', 'Gateway', 'Battery', 'System'];
 const resultFilters: Array<AccessRecordResult | 'all'> = ['all', 'success', 'failed', 'timeout', 'blocked'];
 
 function resultTone(result: AccessRecord['result']): 'success' | 'warning' | 'danger' | 'info' {

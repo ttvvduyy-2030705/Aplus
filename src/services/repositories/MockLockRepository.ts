@@ -1310,7 +1310,7 @@ function buildAnalyticsSummary(filter?: Partial<AnalyticsFilter>): AnalyticsSumm
   const filteredRecords = getAnalyticsRecords(normalized);
   const filteredLocks = getAnalyticsLocks(normalized);
   const filteredAlerts = alerts.filter(alert => alertPassesAnalyticsFilter(alert, normalized) && alert.status !== 'resolved' && alert.status !== 'ignored');
-  const isOpenRecord = (record: AccessRecord) => record.result === 'success' && (record.method.includes('Unlock') || record.method === 'PIN' || record.method === 'Card' || record.method === 'Fingerprint' || record.method === 'Face');
+  const isOpenRecord = (record: AccessRecord) => record.result === 'success' && (record.method.includes('Unlock') || record.method === 'PIN' || record.method === 'Card' || record.method === 'Fingerprint' || record.method === 'Face' || record.method === 'NFC');
   return {
     opensToday: filteredRecords.filter(record => record.createdAt >= today && isOpenRecord(record)).length,
     opensWeek: filteredRecords.filter(record => record.createdAt >= week && isOpenRecord(record)).length,

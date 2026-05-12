@@ -1,12 +1,30 @@
-import React, {memo} from 'react';
+import React, {memo, ReactNode} from 'react';
 import {
   ActivityIndicator,
   Modal,
   Pressable,
   StyleSheet,
-  Text,
+  Text as RNText,
   View,
 } from 'react-native';
+import {useLanguage} from '@/i18n/LanguageContext';
+import {translateString} from '@/i18n/dictionary';
+
+
+function translateNode(node: ReactNode, language: 'vi' | 'en'): ReactNode {
+  if (typeof node === 'string') {
+    return translateString(node, language);
+  }
+  if (Array.isArray(node)) {
+    return node.map((child, index) => <React.Fragment key={index}>{translateNode(child, language)}</React.Fragment>);
+  }
+  return node;
+}
+
+function Text({children, ...props}: React.ComponentProps<typeof RNText>) {
+  const {language} = useLanguage();
+  return <RNText {...props}>{translateNode(children, language)}</RNText>;
+}
 
 type Props = {
   visible: boolean;

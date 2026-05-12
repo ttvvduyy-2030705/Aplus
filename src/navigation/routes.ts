@@ -1,6 +1,7 @@
 import type {OtpFlow} from '@/types/auth';
 import type {CredentialType, PersonRole} from '@/types/credential';
 import type {PasswordKind} from '@/types/password';
+import type {PreviousOwnerPolicy} from '@/types/transfer';
 
 export type AuthRouteName = 'Login' | 'Register' | 'ForgotPassword' | 'OtpVerify' | 'ResetPassword';
 export type MainTabRouteName = 'Home' | 'Access' | 'Activity' | 'MoreHub' | 'Profile';
@@ -55,11 +56,15 @@ export type AppRouteParams = {
   DeviceDiagnostic: {lockId: string};
   MoreHub: {lockId?: string} | undefined;
   PmsHub: undefined;
-  LockTransfer: {lockId?: string} | undefined;
+  BackendIntegration: undefined;
+  RealtimeMonitor: {lockId?: string} | undefined;
+  LockTransfer: {lockId?: string; previousOwnerPolicy?: PreviousOwnerPolicy} | undefined;
   CombinationUnlock: {lockId?: string} | undefined;
   NormallyOpen: {lockId?: string} | undefined;
   OfflineSync: undefined;
+  CardIssuer: undefined;
   SupportCenter: {lockId?: string} | undefined;
+  ReleaseReadiness: undefined;
   Access: undefined;
   Activity: undefined;
   Settings: undefined;

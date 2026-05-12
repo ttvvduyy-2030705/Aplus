@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import {Image, ImageStyle, StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 import {theme} from '@/theme/theme';
 
@@ -109,7 +109,7 @@ const iconSources: Record<AplusIconName, number> = {
   wifi: require('@/assets/icons/wifi.png'),
 };
 
-export function AplusIcon({
+function AplusIconComponent({
   name,
   size = 22,
   color,
@@ -150,6 +150,8 @@ export function AplusIcon({
     </View>
   );
 }
+
+export const AplusIcon = memo(AplusIconComponent);
 
 const styles = StyleSheet.create({
   box: {

@@ -456,6 +456,52 @@ export const MockCredentialRepository = {
     return cloneCredential(credential);
   },
 
+  async upsertAccessCredential(input: {
+    id: string;
+    type: CredentialType;
+    title: string;
+    ownerId: string;
+    ownerName: string;
+    lockId?: string;
+    lockName?: string;
+    scopeLabel: string;
+    status: CredentialStatus;
+    syncState: SyncState;
+    capabilityKey?: Credential['capabilityKey'];
+    expiresAt?: number;
+  }) {
+    await wait(80);
+    const nextCredential: Credential = {
+      id: input.id,
+      type: input.type,
+      title: input.title,
+      ownerId: input.ownerId,
+      ownerName: input.ownerName,
+      lockId: input.lockId,
+      lockName: input.lockName,
+      scope: {lockId: input.lockId, label: input.scopeLabel},
+      status: input.status,
+      syncState: input.syncState,
+      createdAt: Date.now(),
+      expiresAt: input.expiresAt,
+      capabilityKey: input.capabilityKey,
+    };
+
+    let found = false;
+    credentials = credentials.map(item => {
+      if (item.id !== input.id) {
+        return item;
+      }
+      found = true;
+      return {...item, ...nextCredential, createdAt: item.createdAt};
+    });
+    if (!found) {
+      credentials.unshift(nextCredential);
+      memberships = memberships.map(item => item.personId === input.ownerId ? {...item, credentialIds: [input.id, ...item.credentialIds]} : item);
+    }
+    return cloneCredential(credentials.find(item => item.id === input.id) ?? nextCredential);
+  },
+
   async revokeCredential(credentialId: string, revokedBy = 'Admin Aplus') {
     await wait(160);
     credentials = credentials.map(item => item.id === credentialId ? {...item, status: 'revoked', syncState: 'synced', revokedAt: Date.now(), revokedBy} : item);

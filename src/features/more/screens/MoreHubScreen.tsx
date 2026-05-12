@@ -190,6 +190,12 @@ export function MoreHubScreen({lockId}: {lockId?: string}) {
       case 'CredentialHub':
         navigation.navigate('CredentialHub', selectedLock ? {lockId: selectedLock.id} : undefined);
         break;
+      case 'RemoteControl':
+        navigation.navigate('RemoteControl', selectedLock ? {lockId: selectedLock.id} : undefined);
+        break;
+      case 'PhoneAuthorization':
+        navigation.navigate('PhoneAuthorization', selectedLock ? {lockId: selectedLock.id} : undefined);
+        break;
       case 'BatteryPower':
         navigation.navigate('BatteryPower', selectedLock ? {lockId: selectedLock.id} : undefined);
         break;
@@ -214,6 +220,9 @@ export function MoreHubScreen({lockId}: {lockId?: string}) {
       case 'NfcKey':
         navigation.navigate('NfcKey', selectedLock ? {lockId: selectedLock.id} : undefined);
         break;
+      case 'CardIssuer':
+        navigation.navigate('CardIssuer');
+        break;
       case 'Settings':
         navigation.navigate('Settings');
         break;
@@ -225,6 +234,12 @@ export function MoreHubScreen({lockId}: {lockId?: string}) {
         break;
       case 'PmsHub':
         navigation.navigate('PmsHub');
+        break;
+      case 'BackendIntegration':
+        navigation.navigate('BackendIntegration');
+        break;
+      case 'RealtimeMonitor':
+        navigation.navigate('RealtimeMonitor', selectedLock ? {lockId: selectedLock.id} : undefined);
         break;
       case 'LockTransfer':
         navigation.navigate('LockTransfer', selectedLock ? {lockId: selectedLock.id} : undefined);
@@ -265,7 +280,7 @@ export function MoreHubScreen({lockId}: {lockId?: string}) {
         makeAction({id: 'alerts', groupId: 'safety', title: 'Trung tâm báo động', subtitle: 'UI-19 · incident, alert và ticket xử lý', icon: 'alert', targetRoute: 'AlarmCenter', status: 'ready', requiredPermission: 'alerts', badge: alertSummary.unread ? `${alertSummary.unread}! chưa đọc` : '0 unread'}),
         makeAction({id: 'battery', groupId: 'safety', title: 'Pin & điện năng', subtitle: 'UI-21 · threshold, trend pin và lock cần bảo trì', icon: 'battery', targetRoute: 'BatteryPower', status: 'ready', requiredPermission: 'alerts', badge: dashboardSummary.lowBatteryLocks ? `${dashboardSummary.lowBatteryLocks}! pin yếu` : 'Pin ổn'}),
         makeAction({id: 'notification-policy', groupId: 'safety', title: 'Push policy', subtitle: 'UI-60 · cooldown, dedupe và mute alert type', icon: 'bell', targetRoute: 'NotificationPolicy', status: 'ready', requiredPermission: 'settings'}),
-        makeAction({id: 'offline-sync', groupId: 'safety', title: 'Offline Sync Queue', subtitle: 'UI-66 · queue pending, retry và conflict mock', icon: 'sync', targetRoute: 'OfflineSync', status: 'future', requiredPermission: 'settings', badge: isOffline ? 'offline' : dashboardSummary.pendingSyncLocks ? `${dashboardSummary.pendingSyncLocks} pending` : undefined}),
+        makeAction({id: 'offline-sync', groupId: 'safety', title: 'Offline Sync Queue', subtitle: 'UI-66 · cache, queue pending, retry và conflict', icon: 'sync', targetRoute: 'OfflineSync', status: 'ready', requiredPermission: 'settings', badge: isOffline ? 'offline' : dashboardSummary.pendingSyncLocks ? `${dashboardSummary.pendingSyncLocks} pending` : undefined}),
       ],
     },
     {
@@ -274,11 +289,13 @@ export function MoreHubScreen({lockId}: {lockId?: string}) {
       subtitle: 'Credential, nhân sự, khách thuê và role matrix.',
       actions: [
         makeAction({id: 'credential-hub', groupId: 'access', title: 'Thêm quyền mở khóa', subtitle: 'UI-16 · password, card, remote, NFC, admin', icon: 'credential', targetRoute: 'CredentialHub', status: 'ready', requiredPermission: 'staff', badge: selectedLock?.name}),
+        makeAction({id: 'remote-control', groupId: 'access', title: 'Remote vật lý', subtitle: 'UI-24 · pair serial/model/battery', icon: 'remote', targetRoute: 'RemoteControl', status: 'ready', requiredPermission: 'staff', badge: selectedLock?.capabilities.supportsRemoteControl ? 'supported' : 'blocked'}),
+        makeAction({id: 'phone-auth', groupId: 'access', title: 'Ủy quyền điện thoại', subtitle: 'UI-04/50 · QR/link invite, Pending/Accepted', icon: 'phone', targetRoute: 'PhoneAuthorization', status: 'ready', requiredPermission: 'staff'}),
         makeAction({id: 'staff-tenant', groupId: 'access', title: 'Nhân sự & khách thuê', subtitle: 'UI-08 · member list, tenant, staff, guest', icon: 'user', targetRoute: 'StaffTenant', status: 'ready', requiredPermission: 'staff', badge: staffSummary ? `${staffSummary.total} người` : undefined}),
         makeAction({id: 'sub-admin', groupId: 'access', title: 'Quản trị phụ', subtitle: 'UI-13 · SubAdmin theo phạm vi nhà/phòng/khóa', icon: 'admin', targetRoute: 'SubAdmin', status: 'ready', requiredPermission: 'staff', badge: staffSummary ? `${staffSummary.subAdmins} admin` : undefined}),
         makeAction({id: 'role-matrix', groupId: 'access', title: 'Ma trận phân quyền', subtitle: 'UI-48 · unlock, add key, records, rooms, staff', icon: 'matrix', targetRoute: 'RoleMatrix', status: 'ready', requiredPermission: 'staff'}),
         makeAction({id: 'invite-user', groupId: 'access', title: 'Mời user QR/link', subtitle: 'UI-50 · pending, accepted, expired, revoked', icon: 'qr', targetRoute: 'InviteUser', status: 'ready', requiredPermission: 'staff', badge: staffSummary?.pendingInvites ? `${staffSummary.pendingInvites} pending` : undefined}),
-        makeAction({id: 'transfer', groupId: 'access', title: 'Chuyển quyền khóa', subtitle: 'UI-22/61 · OTP/App PIN, accept, audit', icon: 'shield', targetRoute: 'LockTransfer', status: 'future', requiredPermission: 'transfer'}),
+        makeAction({id: 'transfer', groupId: 'access', title: 'Chuyển quyền khóa', subtitle: 'UI-22/61 · OTP/App PIN, accept, audit', icon: 'shield', targetRoute: 'LockTransfer', status: 'ready', requiredPermission: 'transfer'}),
       ],
     },
     {
@@ -292,6 +309,8 @@ export function MoreHubScreen({lockId}: {lockId?: string}) {
         makeAction({id: 'ota', groupId: 'device', title: 'Firmware OTA', subtitle: 'UI-43 · check update, progress, reboot, fail-safe', icon: 'firmware', targetRoute: 'FirmwareOta', status: 'ready', requiredPermission: 'settings'}),
         makeAction({id: 'diagnostic', groupId: 'device', title: 'Diagnostic sức khỏe', subtitle: 'UI-44 · health score, error code, package', icon: 'capability', targetRoute: 'DeviceDiagnostic', status: 'ready', requiredPermission: 'settings'}),
         makeAction({id: 'compatibility', groupId: 'device', title: 'Tương thích model', subtitle: 'UI-69 · chặn flow không hỗ trợ capability', icon: 'shield', targetRoute: 'CompatibilityCheck', status: 'ready', requiredPermission: 'settings'}),
+        makeAction({id: 'backend-integration', groupId: 'device', title: 'Backend / Open API', subtitle: 'UI-64/65/50 · server, API key, webhook, schema', icon: 'gateway', targetRoute: 'BackendIntegration', status: 'ready', requiredPermission: 'settings'}),
+        makeAction({id: 'realtime-monitor', groupId: 'device', title: 'Realtime / MQTT monitor', subtitle: 'UI-65 · WebSocket/MQTT events, command result, reconnect', icon: 'sync', targetRoute: 'RealtimeMonitor', status: 'ready', requiredPermission: 'settings', badge: isOffline ? 'offline' : 'live'}),
       ],
     },
     {
@@ -301,10 +320,11 @@ export function MoreHubScreen({lockId}: {lockId?: string}) {
       actions: [
         makeAction({id: 'rooms', groupId: 'hotel', title: 'Quản lý phòng', subtitle: 'UI-11 · building, floor, room và gán khóa', icon: 'hotel', targetRoute: 'RoomManagement', status: 'ready', requiredPermission: 'rooms', badge: roomSummary.rooms ? `${roomSummary.rooms} phòng` : undefined}),
         makeAction({id: 'room-import', groupId: 'hotel', title: 'Import phòng/người dùng', subtitle: 'UI-56 · preview lỗi trước khi ghi', icon: 'sync', targetRoute: 'RoomImport', status: 'ready', requiredPermission: 'rooms'}),
-        makeAction({id: 'pms', groupId: 'hotel', title: 'PMS / Self check-in', subtitle: 'UI-14/53-57 · booking, check-in/out', icon: 'calendar', targetRoute: 'PmsHub', status: 'future', requiredPermission: 'hotel'}),
-        makeAction({id: 'nfc', groupId: 'hotel', title: 'NFC & thẻ điện thoại', subtitle: 'UI-15 · mobile card, revoke khi mất máy', icon: 'phone', targetRoute: 'NfcKey', status: 'future', requiredPermission: 'nfc'}),
-        makeAction({id: 'combination', groupId: 'hotel', title: 'Mở khóa kết hợp', subtitle: 'UI-28 · PIN+card, Face+PIN, rule theo lịch', icon: 'unlock', targetRoute: 'CombinationUnlock', status: 'future', requiredPermission: 'settings'}),
-        makeAction({id: 'normally-open', groupId: 'hotel', title: 'Mở thường xuyên/lịch lớp', subtitle: 'UI-20/68 · normally open, lịch ca, ngoại lệ', icon: 'calendar', targetRoute: 'NormallyOpen', status: 'future', requiredPermission: 'settings'}),
+        makeAction({id: 'pms', groupId: 'hotel', title: 'PMS / Self check-in', subtitle: 'UI-14/53-57 · booking, check-in/out', icon: 'calendar', targetRoute: 'PmsHub', status: 'ready', requiredPermission: 'hotel'}),
+        makeAction({id: 'nfc', groupId: 'hotel', title: 'NFC & thẻ điện thoại', subtitle: 'UI-15 · mobile card, revoke khi mất máy', icon: 'phone', targetRoute: 'NfcKey', status: 'ready', requiredPermission: 'nfc', badge: selectedLock?.capabilities.supportsNfc ? 'supported' : 'blocked'}),
+        makeAction({id: 'card-issuer', groupId: 'hotel', title: 'Card issuer nâng cao', subtitle: 'UI-63/67/56 · installation, time, emergency, batch issue', icon: 'card', targetRoute: 'CardIssuer', status: 'ready', requiredPermission: 'hotel'}),
+        makeAction({id: 'combination', groupId: 'hotel', title: 'Mở khóa kết hợp', subtitle: 'UI-28 · PIN+card, Face+PIN, rule theo lịch', icon: 'unlock', targetRoute: 'CombinationUnlock', status: 'ready', requiredPermission: 'settings'}),
+        makeAction({id: 'normally-open', groupId: 'hotel', title: 'Mở thường xuyên/lịch lớp', subtitle: 'UI-20/68 · normally open, lịch ca, ngoại lệ', icon: 'calendar', targetRoute: 'NormallyOpen', status: 'ready', requiredPermission: 'settings'}),
       ],
     },
     {
@@ -313,7 +333,8 @@ export function MoreHubScreen({lockId}: {lockId?: string}) {
       subtitle: 'Analytics, drilldown và export từ Records/Alerts.',
       actions: [
         makeAction({id: 'reports-main', groupId: 'reports', title: 'Báo cáo dữ liệu', subtitle: 'UI-17 · KPI mở khóa, failed, alert, low battery', icon: 'history', targetRoute: 'Reports', status: 'ready', requiredPermission: 'reports', badge: analyticsSummary ? `${analyticsSummary.totalRecords} records` : undefined}),
-        makeAction({id: 'support', groupId: 'reports', title: 'Hỗ trợ kỹ thuật', subtitle: 'UI-70 · ticket bảo hành, bảo trì, diagnostic package', icon: 'command', targetRoute: 'SupportCenter', status: 'future', requiredPermission: 'support'}),
+        makeAction({id: 'support', groupId: 'reports', title: 'Hỗ trợ kỹ thuật', subtitle: 'UI-70 · ticket bảo hành, bảo trì, diagnostic package', icon: 'command', targetRoute: 'SupportCenter', status: 'ready', requiredPermission: 'support'}),
+        makeAction({id: 'release-readiness', groupId: 'reports', title: 'QA & release readiness', subtitle: 'UI-00→70 · test route, permission, capability, release guard', icon: 'check', targetRoute: 'ReleaseReadiness', status: 'ready', requiredPermission: 'settings'}),
       ],
     },
   ];

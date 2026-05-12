@@ -1,4 +1,4 @@
-import React, {ReactNode} from 'react';
+import React, {ReactNode, memo, useMemo} from 'react';
 import {Platform, StyleProp, StyleSheet, Text, TextStyle} from 'react-native';
 import {theme} from '@/theme/theme';
 import {useLanguage} from '@/i18n/LanguageContext';
@@ -25,9 +25,9 @@ function translateNode(node: ReactNode, language: 'vi' | 'en'): ReactNode {
   return node;
 }
 
-export function AplusText({children, variant = 'body', color, align, numberOfLines, style}: Props) {
+function AplusTextComponent({children, variant = 'body', color, align, numberOfLines, style}: Props) {
   const {language} = useLanguage();
-  const translatedChildren = translateNode(children, language);
+  const translatedChildren = useMemo(() => translateNode(children, language), [children, language]);
 
   return (
     <Text
@@ -44,6 +44,8 @@ export function AplusText({children, variant = 'body', color, align, numberOfLin
     </Text>
   );
 }
+
+export const AplusText = memo(AplusTextComponent);
 
 const androidFontFix = Platform.OS === 'android'
   ? {

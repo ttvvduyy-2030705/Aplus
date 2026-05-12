@@ -1,5 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {AplusBottomTab} from '@/components/navigation/AplusBottomTab';
+import {CombinationUnlockScreen} from '@/features/accessRules/screens/CombinationUnlockScreen';
+import {NormallyOpenScreen} from '@/features/accessRules/screens/NormallyOpenScreen';
 import {AppPinSecurityScreen} from '@/features/account/screens/AppPinSecurityScreen';
 import {BrandingSettingsScreen} from '@/features/account/screens/BrandingSettingsScreen';
 import {ProfileScreen} from '@/features/account/screens/ProfileScreen';
@@ -18,6 +20,8 @@ import {CompatibilityCheckScreen} from '@/features/credential/screens/Compatibil
 import {CredentialHubScreen} from '@/features/credential/screens/CredentialHubScreen';
 import {RecipientPickerScreen} from '@/features/credential/screens/RecipientPickerScreen';
 import {DeviceDiagnosticScreen} from '@/features/device/screens/DeviceDiagnosticScreen';
+import {FaceEnrollScreen} from '@/features/face/screens/FaceEnrollScreen';
+import {FingerprintEnrollScreen} from '@/features/fingerprint/screens/FingerprintEnrollScreen';
 import {DeviceSettingsScreen} from '@/features/device/screens/DeviceSettingsScreen';
 import {FirmwareOtaScreen} from '@/features/device/screens/FirmwareOtaScreen';
 import {HardwareDetailScreen} from '@/features/device/screens/HardwareDetailScreen';
@@ -25,22 +29,34 @@ import {HomeScreen} from '@/features/home/screens/HomeScreen';
 import {CommandLifecycleScreen} from '@/features/lock/screens/CommandLifecycleScreen';
 import {LockDetailScreen} from '@/features/lock/screens/LockDetailScreen';
 import {MoreHubScreen} from '@/features/more/screens/MoreHubScreen';
+import {NfcKeyScreen} from '@/features/nfc/screens/NfcKeyScreen';
+import {OfflineSyncScreen} from '@/features/offline/screens/OfflineSyncScreen';
 import {RemoteUnlockScreen} from '@/features/lock/screens/RemoteUnlockScreen';
 import {PairingEntryScreen} from '@/features/pairing/screens/PairingEntryScreen';
+import {PmsHubScreen} from '@/features/pms/screens/PmsHubScreen';
+import {CardManagementScreen} from '@/features/card/screens/CardManagementScreen';
+import {CardIssuerScreen} from '@/features/cardIssuer/screens/CardIssuerScreen';
+import {LockTransferScreen} from '@/features/transfer/screens/LockTransferScreen';
 import {ReportDrilldownScreen} from '@/features/reports/screens/ReportDrilldownScreen';
 import {ReportFiltersScreen} from '@/features/reports/screens/ReportFiltersScreen';
 import {ReportsScreen} from '@/features/reports/screens/ReportsScreen';
+import {BackendIntegrationScreen} from '@/features/backend/screens/BackendIntegrationScreen';
+import {RealtimeMonitorScreen} from '@/features/realtime/screens/RealtimeMonitorScreen';
 import {BatteryPowerScreen} from '@/features/records/screens/BatteryPowerScreen';
 import {RecordDetailScreen} from '@/features/records/screens/RecordDetailScreen';
 import {RoomDetailScreen} from '@/features/rooms/screens/RoomDetailScreen';
 import {RoomEditScreen} from '@/features/rooms/screens/RoomEditScreen';
 import {RoomImportScreen} from '@/features/rooms/screens/RoomImportScreen';
 import {RoomManagementScreen} from '@/features/rooms/screens/RoomManagementScreen';
+import {PhoneAuthorizationScreen} from '@/features/remote/screens/PhoneAuthorizationScreen';
+import {RemoteControlScreen} from '@/features/remote/screens/RemoteControlScreen';
 import {PasswordDetailScreen} from '@/features/password/screens/PasswordDetailScreen';
 import {PasswordManagerScreen} from '@/features/password/screens/PasswordManagerScreen';
 import {AddPasswordScreen} from '@/features/password/screens/AddPasswordScreen';
 import {PasswordScheduleScreen} from '@/features/password/screens/PasswordScheduleScreen';
 import {PlaceholderScreen} from '@/features/placeholder/PlaceholderScreen';
+import {SupportCenterScreen} from '@/features/support/screens/SupportCenterScreen';
+import {ReleaseReadinessScreen} from '@/features/qa/screens/ReleaseReadinessScreen';
 import {InviteUserScreen} from '@/features/staff/screens/InviteUserScreen';
 import {MemberDetailScreen} from '@/features/staff/screens/MemberDetailScreen';
 import {RoleMatrixScreen} from '@/features/staff/screens/RoleMatrixScreen';
@@ -81,10 +97,13 @@ export function RootNavigator() {
     }
   }, [route.name]);
 
-  const setMainTab = (tab: MainTabRouteName) => {
+  const setMainTab = useCallback((tab: MainTabRouteName) => {
+    if (tab === activeTab && route.name === tab) {
+      return;
+    }
     setActiveTab(tab);
     navigation.reset(tab);
-  };
+  }, [activeTab, navigation, route.name]);
 
   const isMainTab = mainTabs.includes(route.name as MainTabRouteName);
 
@@ -175,15 +194,15 @@ export function RootNavigator() {
       case 'Pairing':
         return <PairingEntryScreen />;
       case 'FingerprintEnroll':
-        return <PlaceholderScreen title="Thêm vân tay" description="Batch 06 sẽ mô phỏng enrollment 3 lần quét và lưu templateId/reference, không lưu ảnh vân tay thô." primaryAction="Kiểm tra tương thích" targetRoute="CompatibilityCheck" />;
+        return <FingerprintEnrollScreen lockId={route.params?.lockId} recipientId={route.params?.recipientId} />;
       case 'FaceEnroll':
-        return <PlaceholderScreen title="Thêm khuôn mặt" description="Batch 07 sẽ kiểm tra camera/capability, scan front-left-right và lưu FaceTemplateRef mock." primaryAction="Kiểm tra tương thích" targetRoute="CompatibilityCheck" />;
+        return <FaceEnrollScreen lockId={route.params?.lockId} recipientId={route.params?.recipientId} />;
       case 'CardManage':
-        return <PlaceholderScreen title="Quản lý thẻ" description="Batch 08 sẽ làm thẻ thường, thẻ khách sạn và thẻ offline theo policy." primaryAction="Về Credential Hub" targetRoute="CredentialHub" />;
+        return <CardManagementScreen lockId={route.params?.lockId} recipientId={route.params?.recipientId} />;
       case 'RemoteControl':
-        return <PlaceholderScreen title="Thêm remote" description="Batch 09 sẽ pair remote vật lý bằng serial/model/battery và gán phạm vi sử dụng." />;
+        return <RemoteControlScreen lockId={route.params?.lockId} recipientId={route.params?.recipientId} />;
       case 'PhoneAuthorization':
-        return <InviteUserScreen role="Guest" />;
+        return <PhoneAuthorizationScreen lockId={route.params?.lockId} recipientId={route.params?.recipientId} />;
       case 'DeviceSettings':
         return <DeviceSettingsScreen lockId={route.params?.lockId} />;
       case 'HardwareDetail':
@@ -195,23 +214,31 @@ export function RootNavigator() {
       case 'MoreHub':
         return <MoreHubScreen lockId={route.params?.lockId} />;
       case 'PmsHub':
-        return <PlaceholderScreen title="PMS / Self check-in" description="Batch 21 sẽ làm booking calendar, check-in tạo quyền, check-out thu hồi, import và self check-in cho khách." primaryAction="Quản lý phòng" targetRoute="RoomManagement" />;
+        return <PmsHubScreen />;
+      case 'BackendIntegration':
+        return <BackendIntegrationScreen />;
+      case 'RealtimeMonitor':
+        return <RealtimeMonitorScreen lockId={route.params?.lockId} />;
       case 'LockTransfer':
-        return <PlaceholderScreen title="Chuyển quyền khóa" description="Batch 18 sẽ xác minh Owner bằng OTP/App PIN, người nhận accept trong thời hạn và ghi audit đầy đủ." primaryAction="More Hub" targetRoute="MoreHub" />;
+        return <LockTransferScreen lockId={route.params?.lockId} />;
       case 'CombinationUnlock':
-        return <PlaceholderScreen title="Mở khóa kết hợp" description="Batch 19 sẽ làm PIN+card, Face+PIN, Card+fingerprint theo khóa/phòng/người/thời gian." primaryAction="Kiểm tra tương thích" targetRoute="CompatibilityCheck" />;
+        return <CombinationUnlockScreen lockId={route.params?.lockId} />;
       case 'NormallyOpen':
-        return <PlaceholderScreen title="Mở thường xuyên / lịch lớp" description="Batch 19 sẽ làm normally-open, lịch lớp/lịch ca, ngoại lệ ngày nghỉ và kiểm tra timezone." primaryAction="Cài đặt khóa" targetRoute="DeviceSettings" />;
+        return <NormallyOpenScreen lockId={route.params?.lockId} />;
       case 'OfflineSync':
-        return <PlaceholderScreen title="Offline Sync Queue" description="Batch 25 sẽ hiển thị pending/success/fail jobs, retry/cancel và conflict resolution." primaryAction="Lịch sử" targetRoute="Activity" />;
+        return <OfflineSyncScreen />;
+      case 'CardIssuer':
+        return <CardIssuerScreen />;
       case 'SupportCenter':
-        return <PlaceholderScreen title="Hỗ trợ kỹ thuật / bảo hành" description="Batch 28 sẽ làm support ticket, warranty info, maintenance task và diagnostic package đã redaction." primaryAction="Cài đặt khóa" targetRoute="DeviceSettings" />;
+        return <SupportCenterScreen lockId={route.params?.lockId} />;
+      case 'ReleaseReadiness':
+        return <ReleaseReadinessScreen />;
       case 'WifiProvisioning':
         return <PlaceholderScreen title="Wi‑Fi Provisioning" description="Mock chọn mạng Wi‑Fi, nhập mật khẩu và gửi cấu hình xuống khoá." />;
       case 'BleProvisioning':
         return <PlaceholderScreen title="Bluetooth Pairing" description="Mock dò thiết bị BLE, chọn thiết bị và ghép nối an toàn." primaryAction="Cấu hình Wi‑Fi" targetRoute="WifiProvisioning" />;
       case 'NfcKey':
-        return <PlaceholderScreen title="NFC Key" description="Mock tạo và quản lý chìa khoá NFC cho người dùng được phân quyền." primaryAction="Kiểm tra tương thích" targetRoute="CompatibilityCheck" />;
+        return <NfcKeyScreen lockId={route.params?.lockId} recipientId={route.params?.recipientId} />;
       case 'QrScan':
         return <PlaceholderScreen title="QR Scan" description="Mock camera quét mã thiết bị, dùng adapter QR riêng cho Android/iOS." primaryAction="Bluetooth" targetRoute="BleProvisioning" />;
       case 'Notifications':

@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
   },
   html: {
     color: colors.deepGray,
-    fontFamily: fonts.Nunito.regular,
+    ...(fonts.Nunito.regular ? {fontFamily: fonts.Nunito.regular} : {}),
     lineHeight: 23,
   },
   arrowContainer: {

@@ -1,14 +1,16 @@
-import React, {memo, useEffect, useMemo, useState} from 'react';
+import React, {memo, ReactNode, useEffect, useMemo, useState} from 'react';
 import {
   ActivityIndicator,
   Modal,
   Pressable,
   ScrollView,
   StyleSheet,
-  Text,
+  Text as RNText,
   useWindowDimensions,
   View,
 } from 'react-native';
+import {useLanguage} from '@/i18n/LanguageContext';
+import {translateString} from '@/i18n/dictionary';
 import {
   APLUS_PRO_FEATURES,
   APLUS_PRO_REASON_LABEL,
@@ -16,6 +18,22 @@ import {
   AplusProPlan,
   AplusProPlanKey,
 } from './subscriptionProducts';
+
+
+function translateNode(node: ReactNode, language: 'vi' | 'en'): ReactNode {
+  if (typeof node === 'string') {
+    return translateString(node, language);
+  }
+  if (Array.isArray(node)) {
+    return node.map((child, index) => <React.Fragment key={index}>{translateNode(child, language)}</React.Fragment>);
+  }
+  return node;
+}
+
+function Text({children, ...props}: React.ComponentProps<typeof RNText>) {
+  const {language} = useLanguage();
+  return <RNText {...props}>{translateNode(children, language)}</RNText>;
+}
 
 type Props = {
   visible: boolean;
