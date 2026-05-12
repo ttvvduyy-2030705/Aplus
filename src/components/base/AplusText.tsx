@@ -1,6 +1,8 @@
 import React, {ReactNode} from 'react';
 import {Platform, StyleProp, StyleSheet, Text, TextStyle} from 'react-native';
 import {theme} from '@/theme/theme';
+import {useLanguage} from '@/i18n/LanguageContext';
+import {translateString} from '@/i18n/dictionary';
 
 type TextVariant = 'hero' | 'title' | 'subtitle' | 'body' | 'caption' | 'label';
 
@@ -13,7 +15,20 @@ type Props = {
   style?: StyleProp<TextStyle>;
 };
 
+function translateNode(node: ReactNode, language: 'vi' | 'en'): ReactNode {
+  if (typeof node === 'string') {
+    return translateString(node, language);
+  }
+  if (Array.isArray(node)) {
+    return node.map((child, index) => <React.Fragment key={index}>{translateNode(child, language)}</React.Fragment>);
+  }
+  return node;
+}
+
 export function AplusText({children, variant = 'body', color, align, numberOfLines, style}: Props) {
+  const {language} = useLanguage();
+  const translatedChildren = translateNode(children, language);
+
   return (
     <Text
       allowFontScaling={false}
@@ -25,7 +40,7 @@ export function AplusText({children, variant = 'body', color, align, numberOfLin
         align ? {textAlign: align} : null,
         style,
       ]}>
-      {children}
+      {translatedChildren}
     </Text>
   );
 }

@@ -1,6 +1,7 @@
 import React, {createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState} from 'react';
 import {NativeAdapters} from '@/services/adapters/nativeAdapters';
 import {MockAuthRepository} from '@/services/repositories/MockAuthRepository';
+import {LanguageProvider} from '@/i18n/LanguageContext';
 import {MockAccountRepository} from '@/services/repositories/MockAccountRepository';
 import {MockLockRepository} from '@/services/repositories/MockLockRepository';
 import {createSessionStore} from '@/services/session/SessionStore';
@@ -1192,7 +1193,11 @@ export function AppStateProvider({children}: {children: ReactNode}) {
     findLock,
   }), [accessRecords, alertSummary, alerts, alertsLoading, addDemoLock, addPairedLock, applyFirmwareVersion, auth, createIncidentTicket, dashboardSummary, evaluateRemoteUnlock, findCommand, findLock, getAccessRecordDetail, getAlertDetail, getBatteryReports, getCapabilityMatrix, getDeviceDiagnostic, getFirmwareInfo, homes, ignoreAlert, incidentTickets, isOffline, isPairingSerialBound, lockCommands, locks, locksError, locksLoading, pairingError, pairingGateways, pairingLoading, markAlertRead, notificationPolicy, reloadAlerts, reloadIncidentTickets, reloadNotificationPolicy, resolveAlert, saveAccessRecordNote, reloadAccessRecords, reloadLocks, reloadPairingGateways, reloadRooms, roomBuildings, roomFloors, roomSummary, rooms, roomsError, roomsLoading, saveRoom, selectedLockFilter, setLockFilter, startLockCommand, updateLockSettings, updateNotificationPolicy, getRoomDetail, deleteRoom, assignLockToRoom, previewRoomImport, commitRoomImport, analyticsFilter, analyticsSummary, methodBreakdown, userBreakdown, riskLocks, reportTimeSeries, reportsLoading, lastReportExport, reloadAnalytics, updateAnalyticsFilter, exportAnalyticsReport, currentLanguage, appPinSettings, trustedDevices, brandingConfig, localizationResources, accountSecurityLoading, reloadAccountSecurity, updateAppPinSettings, setAppPin, verifyAppPin, changeLanguage, updateBrandingConfig, revokeTrustedDevice, renameTrustedDevice]);
 
-  return <AppStateContext.Provider value={value}>{children}</AppStateContext.Provider>;
+  return (
+    <LanguageProvider language={currentLanguage}>
+      <AppStateContext.Provider value={value}>{children}</AppStateContext.Provider>
+    </LanguageProvider>
+  );
 }
 
 export function useAppState() {

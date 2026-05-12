@@ -54,7 +54,7 @@ export function BrandingSettingsScreen() {
 
   const selectLanguage = async (language: AppLanguageCode) => {
     await changeLanguage(language);
-    setMessage(language === 'vi' ? 'Đã chuyển sang Tiếng Việt.' : 'Switched to English.');
+    setMessage(language === 'vi' ? 'Đã chuyển toàn bộ app sang Tiếng Việt.' : 'Switched the whole app to English.');
   };
 
   return (
@@ -73,7 +73,7 @@ export function BrandingSettingsScreen() {
 
       <AplusCard style={styles.card}>
         <AplusText variant="subtitle">Ngôn ngữ</AplusText>
-        <AplusText variant="caption">Demo đổi ngôn ngữ ở cấp state. Các batch sau có thể đọc `currentLanguage` để thay tài nguyên string.</AplusText>
+        <AplusText variant="caption">Bấm English hoặc Tiếng Việt để đổi ngôn ngữ toàn app ngay lập tức: tabbar, header, button, label, placeholder và các status chip dùng chung.</AplusText>
         <View style={styles.languageList}>
           {localizationResources.map(resource => {
             const selected = currentLanguage === resource.language;

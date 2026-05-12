@@ -1,6 +1,8 @@
 import React from 'react';
 import {StyleProp, StyleSheet, TextInput, TextInputProps, View, ViewStyle} from 'react-native';
 import {theme} from '@/theme/theme';
+import {useLanguage} from '@/i18n/LanguageContext';
+import {translateString} from '@/i18n/dictionary';
 import {AplusText} from './AplusText';
 import {AplusIcon, type AplusIconName} from './AplusIcon';
 
@@ -12,6 +14,9 @@ type Props = TextInputProps & {
 };
 
 export function AplusTextField({label, error, leftIcon, containerStyle, style, placeholderTextColor, ...rest}: Props) {
+  const {language} = useLanguage();
+  const translatedPlaceholder = typeof rest.placeholder === 'string' ? translateString(rest.placeholder, language) : rest.placeholder;
+
   return (
     <View style={[styles.container, containerStyle]}>
       {label ? <AplusText variant="label" style={styles.label}>{label}</AplusText> : null}
@@ -19,6 +24,7 @@ export function AplusTextField({label, error, leftIcon, containerStyle, style, p
         {leftIcon ? <AplusIcon name={leftIcon} size={21} color={error ? theme.colors.danger : theme.colors.primary} /> : null}
         <TextInput
           {...rest}
+          placeholder={translatedPlaceholder}
           placeholderTextColor={placeholderTextColor ?? theme.colors.textSubtle}
           style={[styles.input, style]}
         />
