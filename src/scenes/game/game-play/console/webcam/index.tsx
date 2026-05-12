@@ -55,7 +55,7 @@ import {useAplusPro} from 'features/subscription';
 
 const BASE_ZOOM_STEPS = [1, 2, 5, 10];
 
-const DEBUG_CAMERA = true;
+const DEBUG_CAMERA = false;
 const LIVE_OVERLAY_SNAPSHOT_WIDTH = 1920;
 const LIVE_OVERLAY_SNAPSHOT_HEIGHT = 1080;
 const LIVE_OVERLAY_SNAPSHOT_MIN_INTERVAL_MS = 450;

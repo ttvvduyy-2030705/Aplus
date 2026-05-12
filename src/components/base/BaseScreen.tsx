@@ -25,7 +25,11 @@ export function BaseScreen({children, scroll = true, padded = true, footer, styl
       <StatusBar barStyle="light-content" backgroundColor={theme.colors.background} />
       <View style={styles.redGlow} />
       {scroll ? (
-        <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.scrollContent}>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          removeClippedSubviews
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}>
           {content}
         </ScrollView>
       ) : (

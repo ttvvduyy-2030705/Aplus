@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {Pressable, StyleSheet, View} from 'react-native';
+import {InteractionManager, Pressable, StyleSheet, View} from 'react-native';
 import {BaseScreen} from '@/components/base/BaseScreen';
 import {AplusCard} from '@/components/base/AplusCard';
 import {AplusHeader} from '@/components/base/AplusHeader';
@@ -151,11 +151,27 @@ export function MoreHubScreen({lockId}: {lockId?: string}) {
   const permissionContext = useMemo(() => buildPermissionContext(userRole, isOffline), [isOffline, userRole]);
 
   useEffect(() => {
-    reloadLocks();
-    reloadAlerts();
-    reloadRooms();
-    reloadAnalytics();
-    MockCredentialRepository.getStaffSummary().then(setStaffSummary);
+    let cancelled = false;
+    const task = InteractionManager.runAfterInteractions(() => {
+      if (cancelled) {
+        return;
+      }
+
+      reloadLocks();
+      reloadAlerts();
+      reloadRooms();
+      reloadAnalytics();
+      MockCredentialRepository.getStaffSummary().then(summary => {
+        if (!cancelled) {
+          setStaffSummary(summary);
+        }
+      });
+    });
+
+    return () => {
+      cancelled = true;
+      task.cancel?.();
+    };
   }, [reloadAlerts, reloadAnalytics, reloadLocks, reloadRooms]);
 
   const go = (route: AppRouteName) => {

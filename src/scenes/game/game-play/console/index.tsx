@@ -66,7 +66,7 @@ const getPoolBall = (number: BallType) => {
 const clamp = (value: number, min: number, max: number) =>
   Math.max(min, Math.min(max, value));
 
-const DEBUG_CAROM_LAYOUT = true;
+const DEBUG_CAROM_LAYOUT = false;
 const debugCaromLayout = (...args: any[]) => {
   if (DEBUG_CAROM_LAYOUT) {
     console.log(...args);

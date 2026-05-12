@@ -1,4 +1,5 @@
 import React, {createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState} from 'react';
+import {InteractionManager} from 'react-native';
 import {NativeAdapters} from '@/services/adapters/nativeAdapters';
 import {MockAuthRepository} from '@/services/repositories/MockAuthRepository';
 import {LanguageProvider} from '@/i18n/LanguageContext';
@@ -164,6 +165,12 @@ const defaultAnalyticsFilter: AnalyticsFilter = {
   query: '',
 };
 
+type AuthNavigationState = {
+  isAuthenticated: boolean;
+  isBootstrapping: boolean;
+};
+
+const AuthNavigationContext = createContext<AuthNavigationState | undefined>(undefined);
 const AppStateContext = createContext<AppStateValue | undefined>(undefined);
 const sessionStore = createSessionStore(NativeAdapters.secureStorage);
 
@@ -667,14 +674,26 @@ export function AppStateProvider({children}: {children: ReactNode}) {
   }, [selectedLockFilter]);
 
   useEffect(() => {
-    reloadLocks('all');
-    reloadAccessRecords();
-    reloadPairingGateways();
-    reloadAlerts();
-    reloadIncidentTickets();
-    reloadNotificationPolicy();
-    reloadRooms();
-    reloadAnalytics(defaultAnalyticsFilter);
+    let cancelled = false;
+    const task = InteractionManager.runAfterInteractions(() => {
+      if (cancelled) {
+        return;
+      }
+
+      reloadLocks('all');
+      reloadAccessRecords();
+      reloadPairingGateways();
+      reloadAlerts();
+      reloadIncidentTickets();
+      reloadNotificationPolicy();
+      reloadRooms();
+      reloadAnalytics(defaultAnalyticsFilter);
+    });
+
+    return () => {
+      cancelled = true;
+      task.cancel?.();
+    };
   }, [reloadAccessRecords, reloadAlerts, reloadAnalytics, reloadIncidentTickets, reloadLocks, reloadNotificationPolicy, reloadPairingGateways, reloadRooms]);
 
   useEffect(() => {
@@ -1193,11 +1212,26 @@ export function AppStateProvider({children}: {children: ReactNode}) {
     findLock,
   }), [accessRecords, alertSummary, alerts, alertsLoading, addDemoLock, addPairedLock, applyFirmwareVersion, auth, createIncidentTicket, dashboardSummary, evaluateRemoteUnlock, findCommand, findLock, getAccessRecordDetail, getAlertDetail, getBatteryReports, getCapabilityMatrix, getDeviceDiagnostic, getFirmwareInfo, homes, ignoreAlert, incidentTickets, isOffline, isPairingSerialBound, lockCommands, locks, locksError, locksLoading, pairingError, pairingGateways, pairingLoading, markAlertRead, notificationPolicy, reloadAlerts, reloadIncidentTickets, reloadNotificationPolicy, resolveAlert, saveAccessRecordNote, reloadAccessRecords, reloadLocks, reloadPairingGateways, reloadRooms, roomBuildings, roomFloors, roomSummary, rooms, roomsError, roomsLoading, saveRoom, selectedLockFilter, setLockFilter, startLockCommand, updateLockSettings, updateNotificationPolicy, getRoomDetail, deleteRoom, assignLockToRoom, previewRoomImport, commitRoomImport, analyticsFilter, analyticsSummary, methodBreakdown, userBreakdown, riskLocks, reportTimeSeries, reportsLoading, lastReportExport, reloadAnalytics, updateAnalyticsFilter, exportAnalyticsReport, currentLanguage, appPinSettings, trustedDevices, brandingConfig, localizationResources, accountSecurityLoading, reloadAccountSecurity, updateAppPinSettings, setAppPin, verifyAppPin, changeLanguage, updateBrandingConfig, revokeTrustedDevice, renameTrustedDevice]);
 
+  const authNavigationValue = useMemo<AuthNavigationState>(() => ({
+    isAuthenticated: auth.isAuthenticated,
+    isBootstrapping: auth.isBootstrapping,
+  }), [auth.isAuthenticated, auth.isBootstrapping]);
+
   return (
     <LanguageProvider language={currentLanguage}>
-      <AppStateContext.Provider value={value}>{children}</AppStateContext.Provider>
+      <AuthNavigationContext.Provider value={authNavigationValue}>
+        <AppStateContext.Provider value={value}>{children}</AppStateContext.Provider>
+      </AuthNavigationContext.Provider>
     </LanguageProvider>
   );
+}
+
+export function useAuthNavigationState() {
+  const value = useContext(AuthNavigationContext);
+  if (!value) {
+    throw new Error('useAuthNavigationState phải được dùng bên trong AppStateProvider');
+  }
+  return value;
 }
 
 export function useAppState() {

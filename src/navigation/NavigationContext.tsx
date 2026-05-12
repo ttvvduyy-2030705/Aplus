@@ -1,4 +1,4 @@
-import React, {createContext, ReactNode, useContext, useMemo, useState} from 'react';
+import React, {createContext, ReactNode, useCallback, useContext, useMemo, useState} from 'react';
 import type {AppRoute, AppRouteName, AppRouteParams} from './routes';
 
 type NavigationValue = {
@@ -16,14 +16,32 @@ export function NavigationProvider({children}: {children: ReactNode}) {
   const [stack, setStack] = useState<AppRoute[]>([{name: 'Splash', params: undefined}]);
   const currentRoute = stack[stack.length - 1];
 
+  const navigate = useCallback(<T extends AppRouteName,>(name: T, params?: AppRouteParams[T]) => {
+    setStack(prev => [...prev, {name, params} as AppRoute]);
+  }, []);
+
+  const reset = useCallback(<T extends AppRouteName,>(name: T, params?: AppRouteParams[T]) => {
+    setStack(prev => {
+      const current = prev[prev.length - 1];
+      if (prev.length === 1 && current?.name === name && current?.params === params) {
+        return prev;
+      }
+      return [{name, params} as AppRoute];
+    });
+  }, []);
+
+  const goBack = useCallback(() => {
+    setStack(prev => (prev.length > 1 ? prev.slice(0, -1) : prev));
+  }, []);
+
   const value = useMemo<NavigationValue>(() => ({
     currentRoute,
     stack,
-    navigate: (name, params) => setStack(prev => [...prev, {name, params} as AppRoute]),
-    reset: (name, params) => setStack([{name, params} as AppRoute]),
-    goBack: () => setStack(prev => (prev.length > 1 ? prev.slice(0, -1) : prev)),
+    navigate,
+    reset,
+    goBack,
     canGoBack: stack.length > 1,
-  }), [currentRoute, stack]);
+  }), [currentRoute, goBack, navigate, reset, stack]);
 
   return <NavigationContext.Provider value={value}>{children}</NavigationContext.Provider>;
 }

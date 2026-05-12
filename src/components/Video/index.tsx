@@ -52,7 +52,7 @@ import {
 } from 'services/youtubeCameraStream';
 
 
-const DEBUG_VIDEO = true;
+const DEBUG_VIDEO = false;
 const debugVideoLog = (...args: any[]) => {
   if (DEBUG_VIDEO) {
     console.log(...args);

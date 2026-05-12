@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {AplusBottomTab} from '@/components/navigation/AplusBottomTab';
 import {CombinationUnlockScreen} from '@/features/accessRules/screens/CombinationUnlockScreen';
 import {NormallyOpenScreen} from '@/features/accessRules/screens/NormallyOpenScreen';
@@ -63,7 +63,7 @@ import {RoleMatrixScreen} from '@/features/staff/screens/RoleMatrixScreen';
 import {StaffTenantScreen} from '@/features/staff/screens/StaffTenantScreen';
 import {SubAdminScreen} from '@/features/staff/screens/SubAdminScreen';
 import {SplashScreen} from '@/features/splash/screens/SplashScreen';
-import {useAppState} from '@/state/AppStateContext';
+import {useAuthNavigationState} from '@/state/AppStateContext';
 import type {MainTabRouteName} from './routes';
 import {useAplusNavigation} from './NavigationContext';
 
@@ -72,7 +72,7 @@ const authRoutes = ['Login', 'Register', 'ForgotPassword', 'OtpVerify', 'ResetPa
 
 export function RootNavigator() {
   const navigation = useAplusNavigation();
-  const {auth} = useAppState();
+  const auth = useAuthNavigationState();
   const [activeTab, setActiveTab] = useState<MainTabRouteName>('Home');
   const route = navigation.currentRoute;
 
@@ -107,7 +107,7 @@ export function RootNavigator() {
 
   const isMainTab = mainTabs.includes(route.name as MainTabRouteName);
 
-  const renderScreen = () => {
+  const screen = useMemo(() => {
     switch (route.name) {
       case 'Splash':
         return <SplashScreen />;
@@ -250,13 +250,13 @@ export function RootNavigator() {
       default:
         return <PlaceholderScreen title="Aplus" description="Màn đang được chuẩn bị trong batch kế tiếp." />;
     }
-  };
+  }, [route.name, route.params]);
 
   const shouldShowTabs = isMainTab && auth.isAuthenticated && !authRoutes.includes(route.name);
 
   return (
     <>
-      {renderScreen()}
+      {screen}
       {shouldShowTabs ? <AplusBottomTab activeTab={activeTab} onChange={setMainTab} /> : null}
     </>
   );
