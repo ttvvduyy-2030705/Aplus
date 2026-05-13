@@ -1,0 +1,255 @@
+﻿{
+    "createdAt":  "2026-05-13T09:21:07.1534030+07:00",
+    "root":  "C:\\project\\aplus",
+    "quarantineDir":  "C:\\project\\aplus\\_legacy_quarantine\\phase1_20260513_092107",
+    "moved":  [
+                  {
+                      "originalRelativePath":  "backend\\scoremenu-server",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\backend\\scoremenu-server"
+                  },
+                  {
+                      "originalRelativePath":  "backend\\src\\billing.js",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\backend\\src\\billing.js"
+                  },
+                  {
+                      "originalRelativePath":  "backend\\src\\index.js",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\backend\\src\\index.js"
+                  },
+                  {
+                      "originalRelativePath":  "docs\\restaurant-menu-batch10-16-plan.md",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\docs\\restaurant-menu-batch10-16-plan.md"
+                  },
+                  {
+                      "originalRelativePath":  "docs\\restaurant-menu-batch10-repository-multirestaurant-foundation.md",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\docs\\restaurant-menu-batch10-repository-multirestaurant-foundation.md"
+                  },
+                  {
+                      "originalRelativePath":  "docs\\restaurant-menu-batch11-multirestaurant-context-isolation.md",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\docs\\restaurant-menu-batch11-multirestaurant-context-isolation.md"
+                  },
+                  {
+                      "originalRelativePath":  "docs\\restaurant-menu-batch11-visual-priority-polish.md",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\docs\\restaurant-menu-batch11-visual-priority-polish.md"
+                  },
+                  {
+                      "originalRelativePath":  "docs\\restaurant-menu-batch1-architecture-cleanup.md",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\docs\\restaurant-menu-batch1-architecture-cleanup.md"
+                  },
+                  {
+                      "originalRelativePath":  "docs\\restaurant-menu-batch2-order-payment-normalization.md",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\docs\\restaurant-menu-batch2-order-payment-normalization.md"
+                  },
+                  {
+                      "originalRelativePath":  "docs\\restaurant-menu-batch3-admin-auth-session.md",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\docs\\restaurant-menu-batch3-admin-auth-session.md"
+                  },
+                  {
+                      "originalRelativePath":  "docs\\restaurant-menu-batch4-cart-menu-store.md",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\docs\\restaurant-menu-batch4-cart-menu-store.md"
+                  },
+                  {
+                      "originalRelativePath":  "docs\\restaurant-menu-batch5-responsive-menu-ui.md",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\docs\\restaurant-menu-batch5-responsive-menu-ui.md"
+                  },
+                  {
+                      "originalRelativePath":  "docs\\restaurant-menu-batch6-crud-menu-categories.md",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\docs\\restaurant-menu-batch6-crud-menu-categories.md"
+                  },
+                  {
+                      "originalRelativePath":  "docs\\restaurant-menu-batch7-local-image-standardization.md",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\docs\\restaurant-menu-batch7-local-image-standardization.md"
+                  },
+                  {
+                      "originalRelativePath":  "docs\\restaurant-menu-batch8-cart-ux.md",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\docs\\restaurant-menu-batch8-cart-ux.md"
+                  },
+                  {
+                      "originalRelativePath":  "docs\\restaurant-menu-batch9-performance-log.md",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\docs\\restaurant-menu-batch9-performance-log.md"
+                  },
+                  {
+                      "originalRelativePath":  "docs\\scoremenu-qr-order-implementation.md",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\docs\\scoremenu-qr-order-implementation.md"
+                  },
+                  {
+                      "originalRelativePath":  "ios\\billiards_management",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\ios\\billiards_management"
+                  },
+                  {
+                      "originalRelativePath":  "ios\\billiards_management.xcodeproj",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\ios\\billiards_management.xcodeproj"
+                  },
+                  {
+                      "originalRelativePath":  "ios\\billiards_management.xcworkspace",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\ios\\billiards_management.xcworkspace"
+                  },
+                  {
+                      "originalRelativePath":  "ios\\billiards_managementTests",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\ios\\billiards_managementTests"
+                  },
+                  {
+                      "originalRelativePath":  "src\\assets\\images\\game",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\assets\\images\\game"
+                  },
+                  {
+                      "originalRelativePath":  "src\\assets\\images\\pool8-black",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\assets\\images\\pool8-black"
+                  },
+                  {
+                      "originalRelativePath":  "src\\assets\\images\\webcam",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\assets\\images\\webcam"
+                  },
+                  {
+                      "originalRelativePath":  "src\\components\\Ball",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\components\\Ball"
+                  },
+                  {
+                      "originalRelativePath":  "src\\components\\Button",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\components\\Button"
+                  },
+                  {
+                      "originalRelativePath":  "src\\components\\CaromBroadcastScoreboard",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\components\\CaromBroadcastScoreboard"
+                  },
+                  {
+                      "originalRelativePath":  "src\\components\\Container",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\components\\Container"
+                  },
+                  {
+                      "originalRelativePath":  "src\\components\\Countdown",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\components\\Countdown"
+                  },
+                  {
+                      "originalRelativePath":  "src\\components\\Divider",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\components\\Divider"
+                  },
+                  {
+                      "originalRelativePath":  "src\\components\\ErrorBoundary",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\components\\ErrorBoundary"
+                  },
+                  {
+                      "originalRelativePath":  "src\\components\\HOC",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\components\\HOC"
+                  },
+                  {
+                      "originalRelativePath":  "src\\components\\Image",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\components\\Image"
+                  },
+                  {
+                      "originalRelativePath":  "src\\components\\Loading",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\components\\Loading"
+                  },
+                  {
+                      "originalRelativePath":  "src\\components\\PoolBroadcastScoreboard",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\components\\PoolBroadcastScoreboard"
+                  },
+                  {
+                      "originalRelativePath":  "src\\components\\Switch",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\components\\Switch"
+                  },
+                  {
+                      "originalRelativePath":  "src\\components\\Text",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\components\\Text"
+                  },
+                  {
+                      "originalRelativePath":  "src\\components\\TextInput",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\components\\TextInput"
+                  },
+                  {
+                      "originalRelativePath":  "src\\components\\UvcCameraView",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\components\\UvcCameraView"
+                  },
+                  {
+                      "originalRelativePath":  "src\\components\\Video",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\components\\Video"
+                  },
+                  {
+                      "originalRelativePath":  "src\\components\\View",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\components\\View"
+                  },
+                  {
+                      "originalRelativePath":  "src\\config\\livestreamAuth.ts",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\config\\livestreamAuth.ts"
+                  },
+                  {
+                      "originalRelativePath":  "src\\config\\restaurantMenu.ts",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\config\\restaurantMenu.ts"
+                  },
+                  {
+                      "originalRelativePath":  "src\\context",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\context"
+                  },
+                  {
+                      "originalRelativePath":  "src\\data",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\data"
+                  },
+                  {
+                      "originalRelativePath":  "src\\repositories",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\repositories"
+                  },
+                  {
+                      "originalRelativePath":  "src\\scenes",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\scenes"
+                  },
+                  {
+                      "originalRelativePath":  "src\\services\\ffmpeg",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\services\\ffmpeg"
+                  },
+                  {
+                      "originalRelativePath":  "src\\services\\liveSession.ts",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\services\\liveSession.ts"
+                  },
+                  {
+                      "originalRelativePath":  "src\\services\\livestreamAuth.ts",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\services\\livestreamAuth.ts"
+                  },
+                  {
+                      "originalRelativePath":  "src\\services\\replay",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\services\\replay"
+                  },
+                  {
+                      "originalRelativePath":  "src\\services\\restaurantAdminAuthService.ts",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\services\\restaurantAdminAuthService.ts"
+                  },
+                  {
+                      "originalRelativePath":  "src\\services\\restaurantAdminStore.ts",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\services\\restaurantAdminStore.ts"
+                  },
+                  {
+                      "originalRelativePath":  "src\\services\\restaurantMenuImage.ts",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\services\\restaurantMenuImage.ts"
+                  },
+                  {
+                      "originalRelativePath":  "src\\services\\restaurantMenuRepository.ts",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\services\\restaurantMenuRepository.ts"
+                  },
+                  {
+                      "originalRelativePath":  "src\\services\\restaurantMenuStorage.ts",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\services\\restaurantMenuStorage.ts"
+                  },
+                  {
+                      "originalRelativePath":  "src\\services\\restaurantWorkspaceStorage.ts",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\services\\restaurantWorkspaceStorage.ts"
+                  },
+                  {
+                      "originalRelativePath":  "src\\services\\uvc",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\services\\uvc"
+                  },
+                  {
+                      "originalRelativePath":  "src\\services\\youtubeCameraStream.ts",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\services\\youtubeCameraStream.ts"
+                  },
+                  {
+                      "originalRelativePath":  "src\\services\\youtubeLiveFlow.ts",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\services\\youtubeLiveFlow.ts"
+                  },
+                  {
+                      "originalRelativePath":  "src\\services\\youtubeNativeLive.ts",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\services\\youtubeNativeLive.ts"
+                  },
+                  {
+                      "originalRelativePath":  "src\\stores",
+                      "quarantinedRelativePath":  "_legacy_quarantine\\phase1_20260513_092107\\src\\stores"
+                  }
+              ]
+}

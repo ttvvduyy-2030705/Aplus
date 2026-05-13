@@ -114,17 +114,31 @@ export function HomeScreen() {
         </View>
       </View>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.homeRow}>
-        {homes.map(home => <HomeSummaryCard key={home.id} home={home} />)}
-      </ScrollView>
+      <ScrollView
+  horizontal
+  showsHorizontalScrollIndicator={false}
+  contentContainerStyle={styles.homeRow}>
+  {homes.map(home => (
+    <HomeSummaryCard key={home.id} home={home} />
+  ))}
+</ScrollView>
 
       <View style={styles.sectionHeader}>
-        <View>
-          <AplusText variant="subtitle">Danh sách khóa</AplusText>
-          <AplusText variant="caption">Bấm khóa nào vào đúng Lock Detail của khóa đó</AplusText>
-        </View>
-        <AplusButton title="Tải lại" leftIcon="refresh" variant="ghost" onPress={() => reloadLocks(selectedLockFilter)} style={styles.reloadButton} />
-      </View>
+  <View style={styles.sectionHeaderText}>
+    <AplusText variant="subtitle">Danh sách khóa</AplusText>
+    <AplusText variant="caption">
+      Bấm khóa nào vào đúng Lock Detail của khóa đó
+    </AplusText>
+  </View>
+
+  <AplusButton
+    title="Tải lại"
+    leftIcon="refresh"
+    variant="ghost"
+    onPress={() => reloadLocks(selectedLockFilter)}
+    style={styles.reloadButton}
+  />
+</View>
 
       {locksLoading ? <LoadingView /> : null}
       {locksError ? <ErrorState message={locksError} onRetry={() => reloadLocks(selectedLockFilter)} /> : null}
@@ -191,16 +205,26 @@ const styles = StyleSheet.create({
     gap: theme.spacing.md,
   },
   sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: theme.spacing.md,
-  },
-  reloadButton: {
-    minHeight: 38,
-    paddingHorizontal: theme.spacing.md,
-  },
+  flexDirection: 'row',
+  alignItems: 'flex-start',
+  justifyContent: 'space-between',
+  gap: theme.spacing.md,
+},
+
+sectionHeaderText: {
+  flex: 1,
+  minWidth: 0,
+  paddingRight: theme.spacing.sm,
+},
+
+reloadButton: {
+  minHeight: 38,
+  paddingHorizontal: theme.spacing.md,
+  flexShrink: 0,
+  alignSelf: 'flex-start',
+},
   homeRow: {
-    paddingRight: theme.spacing.xl,
-  },
+  paddingRight: theme.spacing.xl,
+  paddingLeft: 1,
+},
 });

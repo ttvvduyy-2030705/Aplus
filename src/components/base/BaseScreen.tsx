@@ -26,10 +26,10 @@ export function BaseScreen({children, scroll = true, padded = true, footer, styl
       <View style={styles.redGlow} />
       {scroll ? (
         <ScrollView
-          keyboardShouldPersistTaps="handled"
-          removeClippedSubviews
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContent}>
+  keyboardShouldPersistTaps="handled"
+  removeClippedSubviews={false}
+  showsVerticalScrollIndicator={false}
+  contentContainerStyle={styles.scrollContent}>
           {content}
         </ScrollView>
       ) : (
